@@ -1,8 +1,8 @@
 import requests
 import os
 
-os.makedirs('csv/labels/')
-os.makedirs('csv/links/')
+os.makedirs('csv/labels/', exist_ok=True)
+os.makedirs('csv/links/', exist_ok=True)
 
 downloads = [
     {'path': 'csv/label-descriptions.csv', 'url': 'https://storage.googleapis.com/openimages/v5/class-descriptions-boxable.csv'},
