@@ -2,6 +2,8 @@
 
 ## To Use
 Navigate to the `dataset_preprocessing` directory
+Get modules `python -m pip install -r requirements.txt`
+
 ### Download CSV files
 `python download_csv.py`
 
