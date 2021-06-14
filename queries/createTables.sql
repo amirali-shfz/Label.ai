@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS Label
 (
  lid  uuid NOT NULL,
- name string NOT NULL,
+ name text NOT NULL,
  CONSTRAINT PK_label PRIMARY KEY ( lid )
 );
 
