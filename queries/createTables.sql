@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Member
  password text NOT NULL,
  trust    float NOT NULL,
  name     text NOT NULL,
- CONSTRAINT PK_user PRIMARY KEY ( iid )
+ CONSTRAINT PK_user PRIMARY KEY ( mid )
 );
 
 -- classification
