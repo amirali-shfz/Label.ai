@@ -1,11 +1,11 @@
 import api from '../apiService';
 import {User} from '../user/userModel'
 const classificationApi = {
-  getClassificationProblem: async () => {
-    return await api.get('/classification');
+  getClassificationProblem: async (): Promise<any> => {
+    return await api.get('/photo/random');
   },
 
-  postClassificationSolution: async (cId: string, label:string, solution:boolean, user: User) => {
+  postClassificationSolution: async (cId: string, label:string, solution:boolean, user: Partial<User>) => {
     const uid = user.userId;
     await api.post('/classification', {
       cId,
