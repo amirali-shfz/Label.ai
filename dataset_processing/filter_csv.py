@@ -1,24 +1,31 @@
 import pandas as pd
+import os
 
-# Filter Columns
-pd.read_csv('csv/links/test_og.csv')[['ImageID', 'OriginalURL', 'Thumbnail300KURL', 'Rotation']].to_csv('csv/links/test_col-filtered.csv', index=False)
+os.makedirs('csv/filtered/', exist_ok=True)
 
 # Get the labels we want to use
-label_ids = set()
-with open('csv/label-descriptions.csv', 'r') as input:
-    for line in input:
-        label_ids.add(line[:line.find(',')])
+labels  = pd.read_csv('csv/downloads/labels.csv')
+images  = pd.read_csv('csv/downloads/images.csv')[['ImageID', 'OriginalURL', 'Thumbnail300KURL', 'Rotation']]
+classes = pd.read_csv('csv/downloads/classifications.csv')[['ImageID','LabelName','Confidence']]
 
-# Remove labels we don't want to use
-image_ids = set()
-with open('csv/labels/test_og.csv', 'r') as input, open('csv/links/test_reduced.csv', 'w') as output:
-    for line in input:
-        image_id, _, label_id, _  = line.split(',') 
-        if label_id in label_ids:
-            output.write(line)
-            image_ids.add(image_id)
+# Strip /m/ from label id
+labels['ID'] = labels['ID'].str.lstrip('/m/')
+classes['LabelName'] = classes['LabelName'].str.lstrip('/m/')
 
-# Remove images with no labels
-with open('csv/links/test_col-filtered.csv', 'r') as input, open('csv/links/test_reduced.csv', 'w') as output:
-    output.writelines([line for line in input if line[:line.find(',')] in image_ids])
-    
+images['Rotation'] = images['Rotation'].fillna(0).astype(int)
+
+# Set of labels we want to use
+label_ids = set(labels['ID'].values)
+
+# Remove classifications with unused labels
+classes = classes[classes['LabelName'].isin(label_ids)]
+
+# Set of images we want to use
+img_ids = set(classes['ImageID'].values)
+
+# Remove Images that have no labels
+images = images[images['ImageID'].isin(img_ids)]
+
+labels.to_csv('csv/filtered/labels.csv', index=False)
+images.to_csv('csv/filtered/images.csv', index=False)
+classes.to_csv('csv/filtered/classifications.csv', index=False)
