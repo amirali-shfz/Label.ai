@@ -225,8 +225,8 @@ Query 3:
 "c669b972cb7374af","Vehicle"
 "c669b972cb7374af","Boy"
 "c669b972cb7374af","Person"
-
 ---------------
+
 Query 4:
 "lid","avg_conf","tc","fc"
 "03bt1vf","0","0","0"
@@ -239,17 +239,17 @@ Query 4:
 "02dl1y","0","0","0"
 "07yv9","0","0","0"
 "05r655","0","0","0"
-
 --------
 
-5.
+Query 5:
 
 INSERT 0 1
 INSERT 0 1
 INSERT 0 1
+--------
 
 
-Additional feature 1
+Additional Feature 1:
 
    name   
 -----------
@@ -258,7 +258,7 @@ Additional feature 1
 
 
 
-Additional feature 2
+Additional Feature 2:
 
  mid | username  |  password   | trust |   name   
 -----+-----------+-------------+-------+----------
