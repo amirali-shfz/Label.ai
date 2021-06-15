@@ -17,6 +17,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
     path("labels/", include("label_ai.labels.urls")),
+    path("images/", include("label_ai.images.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
