@@ -2,76 +2,57 @@
 -- label
 CREATE TABLE IF NOT EXISTS Label
 (
- lid  text NOT NULL,
- name text NOT NULL,
- CONSTRAINT PK_label PRIMARY KEY ( lid )
+    label_id   text PRIMARY KEY,
+    name       text NOT NULL
 );
 
 -- image
 CREATE TABLE IF NOT EXISTS Image
 (
- iid          text NOT NULL,
- original_url text NOT NULL,
- small_url    text NOT NULL,
- rotation     integer NOT NULL,
- CONSTRAINT PK_photo PRIMARY KEY ( iid )
+    img_id         text PRIMARY KEY,
+    original_url   text NOT NULL,
+    small_url      text,
+    rotation       integer NOT NULL
 );
 
 -- user
 CREATE TABLE IF NOT EXISTS Member
 (
- mid      serial NOT NULL,
- username text NOT NULL,
- password text NOT NULL,
- trust    float NOT NULL,
- name     text NOT NULL,
- CONSTRAINT PK_user PRIMARY KEY ( mid )
+    member_id  SERIAL PRIMARY KEY,
+    username   text NOT NULL,
+    password   text NOT NULL,
+    trust      float NOT NULL,
+    name       text NOT NULL
 );
 
 -- classification
 CREATE TABLE IF NOT EXISTS Classification
 (
- cid            serial NOT NULL,
- confidence     float NOT NULL,
- true_count     integer NOT NULL,
- false_count    integer NOT NULL,
- pre_classified boolean NOT NULL,
- iid            text NOT NULL,
- lid            text NOT NULL,
- CONSTRAINT PK_classification PRIMARY KEY ( cid ),
- CONSTRAINT FK_39 FOREIGN KEY ( iid ) REFERENCES Image ( iid ),
- CONSTRAINT FK_45 FOREIGN KEY ( lid ) REFERENCES Label ( lid )
+    class_id       SERIAL PRIMARY KEY,
+    confidence     float NOT NULL,
+    true_count     integer NOT NULL,
+    false_count    integer NOT NULL,
+    pre_classified boolean NOT NULL,
+    img_id         text NOT NULL,
+    label_id       text NOT NULL,
+    CONSTRAINT fk_image FOREIGN KEY ( img_id ) REFERENCES Image ( img_id ),
+    CONSTRAINT fk_label FOREIGN KEY ( label_id ) REFERENCES Label ( label_id )
 );
 
 -- submission
 CREATE TABLE IF NOT EXISTS Submission
 (
- sid           serial NOT NULL,
- correct_label boolean NOT NULL,
- mid           integer NOT NULL,
- cid           integer NOT NULL,
- CONSTRAINT PK_userclassification PRIMARY KEY ( sid ),
- CONSTRAINT FK_48 FOREIGN KEY ( mid ) REFERENCES Member ( mid ),
- CONSTRAINT FK_51 FOREIGN KEY ( cid ) REFERENCES Classification ( cid )
+    submission_id  SERIAL PRIMARY KEY,
+    correct_label  boolean NOT NULL,
+    member_id      integer NOT NULL,
+    class_id       integer NOT NULL,
+    CONSTRAINT fk_member FOREIGN KEY ( member_id ) REFERENCES Member ( member_id ),
+    CONSTRAINT fk_classification FOREIGN KEY ( class_id ) REFERENCES Classification ( class_id )
 );
 
 -- index
-CREATE INDEX fkIdx_40 ON Classification
-(
- iid
-);
+CREATE INDEX ON Classification ( img_id );
+CREATE INDEX ON Classification ( label_id );
 
-CREATE INDEX fkIdx_46 ON Classification
-(
- lid
-);
-
-CREATE INDEX fkIdx_49 ON Submission
-(
- mid
-);
-
-CREATE INDEX fkIdx_52 ON Submission
-(
- cid
-);
+CREATE INDEX ON Submission ( member_id );
+CREATE INDEX ON Submission ( class_id );
