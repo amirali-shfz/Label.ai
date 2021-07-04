@@ -4,6 +4,7 @@
 - Node.js >= 14
 - PSQL
 - All packages inside `backend/requirements/base.txt`
+  - `python -m pip install backend/requirements/base.txt`
 
 ### Postgresql on Mac
 
@@ -47,12 +48,12 @@
 ### The Website
 1. Create a virtualenv:
    ```bash
-   python3.9 -m venv <virtual env path>
+   python3.9 -m venv venv
    ```
 2. Activate the virtualenv you have just created:
 
    ```bash
-   source <virtual env path>/bin/activate
+   source venv/bin/activate
    ```
 3. install requirements:
    ```bash
@@ -77,7 +78,7 @@
    ```bash
    python manage.py runserver 0.0.0.0:8000
    ```
-8. Visist `0.0.0.0:8000` and enjoy! The 2 functionalities currently supported are:
+8. Visit `0.0.0.0:8000` and enjoy! The 2 functionalities currently supported are:
    
    - List all images: `0.0.0.0:8000/images/` 
    - List all labels: `0.0.0.0:8000/labels/`

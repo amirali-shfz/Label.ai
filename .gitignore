@@ -2,3 +2,5 @@
 *.csv
 !dataset_processing/csv/db_ready/*
 !dataset_processing/csv/test_dataset/*
+
+venv
