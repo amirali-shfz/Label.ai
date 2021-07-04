@@ -14,5 +14,3 @@ class Classification(models.Model):
 
     class Meta:
         db_table = 'classification'
-
-# \copy Classification(iid, lid, confidence, true_count, false_count, pre_classified) FROM 'classifications.csv' DELIMITER ',' CSV;
