@@ -5,7 +5,7 @@ from label_ai.labels.models import Label
 
 
 class Classification(models.Model):
-    cid = models.AutoField(primary_key=True)
+    class_id = models.AutoField(primary_key=True)
     confidence = models.FloatField()
     true_count = models.IntegerField()
     false_count = models.IntegerField()

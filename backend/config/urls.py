@@ -19,6 +19,7 @@ urlpatterns = [
     path("labels/", include("label_ai.labels.urls")),
     path("images/", include("label_ai.images.urls")),
     path("submissions/", include("label_ai.submissions.urls")),
+    path("classifications/", include("label_ai.classifications.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
