@@ -58,4 +58,4 @@ CREATE INDEX ON Submission ( member_id );
 CREATE INDEX ON Submission ( class_id );
 
 -- views
-CREATE OR REPLACE VIEW img_label (url, label) AS SELECT original_url, NAME FROM classification NATURAL JOIN label NATURAL JOIN image;
+CREATE OR REPLACE VIEW img_label (img_id, url, label) AS SELECT original_url, NAME FROM classification NATURAL JOIN label NATURAL JOIN image;
