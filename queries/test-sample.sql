@@ -1,13 +1,13 @@
 
 -- Query 1
 SELECT image.small_url, label.name
-FROM classification, image, label, (SELECT image_id FROM image ORDER BY RANDOM() LIMIT 1) as a
-WHERE a.image_id = image.image_id AND classification.label_id = label.label_id AND image.image_id = classification.image_id
+FROM classification, image, label, (SELECT img_id FROM image ORDER BY RANDOM() LIMIT 1) as a
+WHERE a.img_id = image.img_id AND classification.label_id = label.label_id AND image.img_id = classification.img_id
 
 -- Query 2
 SELECT i.original_url
 FROM classification as c, image as i, label as l
-WHERE i.image_id = c.image_id 
+WHERE i.img_id = c.img_id 
 	AND c.label_id = l.label_id
 	AND c.pre_classified = True 
 	AND l.name = `${req.label}` 
@@ -16,13 +16,13 @@ WHERE i.image_id = c.image_id
 
 
 -- Query 3
-SELECT image_id, l.name
+SELECT img_id, l.name
 FROM classification as c, label as l 
 WHERE confidence < 0.5 
 	AND pre_classified = TRUE 
 	AND c.label_id = l.label_id;
 
-SELECT image_id, l.name
+SELECT img_id, l.name
 FROM classification as c, label as l 
 WHERE confidence > 0.95 
 	AND pre_classified = TRUE 
