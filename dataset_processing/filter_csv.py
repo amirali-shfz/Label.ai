@@ -37,14 +37,21 @@ print('Reducing the set of images...')
 img_ids = set(classes['ImageID'].values)
 img_ids = set(random.sample(img_ids, MAX_NUM_IMAGES))
 
-for index, row in images.iterrows():
-    img_id = row['ImageID']
-    og_url = row['OriginalURL']
-    small_url = row['SmallURL']
-    if img_id in img_ids:
-        if not requests.get(og_url).ok:
-            img_ids.remove(row['ImageID'])
-            print(f'\t({(index+1)*100/len(images):.2f}% done)... Removing {og_url}')
+bad_img_ids = set()
+increment = len(img_ids)//100
+for i, img_id in enumerate(img_ids):
+    if i % increment == 0:
+        print(f'\t{i//increment}% done')
+    row = images.loc[images['ImageID'] == img_id]
+    og_url = row.OriginalURL.item()
+    if not requests.head(og_url).ok:
+        bad_img_ids.add(img_id)
+        print(f'\tRemoving {og_url}')
+    elif isinstance(row.SmallURL.item(), str) and not requests.head(row.SmallURL.item()).ok:
+        row.SmallURL = None
+
+img_ids = img_ids.difference(bad_img_ids)
+
 print(f'\t{len(img_ids)} of {MAX_NUM_IMAGES} remaining')
 
 # Remove Images that have no labels
