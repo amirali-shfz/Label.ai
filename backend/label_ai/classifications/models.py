@@ -3,7 +3,6 @@ from django.db import models
 from label_ai.images.models import Image
 from label_ai.labels.models import Label
 
-
 class Classification(models.Model):
     class_id = models.AutoField(primary_key=True)
     confidence = models.FloatField()
