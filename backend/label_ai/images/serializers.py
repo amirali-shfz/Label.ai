@@ -8,7 +8,7 @@ class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = (
-            "iid",
+            "img_id",
             "original_url",
             "small_url",
             "rotation",

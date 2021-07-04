@@ -8,6 +8,6 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = (
-            "lid",
+            "label_id",
             "name",
         )

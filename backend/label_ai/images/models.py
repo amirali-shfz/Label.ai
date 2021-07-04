@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Image(models.Model):
-    iid = models.TextField(primary_key=True)
+    img_id = models.TextField(primary_key=True)
     original_url = models.TextField()
     small_url = models.TextField()
     rotation = models.IntegerField()
