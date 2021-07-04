@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .models import Submission
+from .serializers import SubmissionSerializer
+
+
+class SubmissionList(generics.ListAPIView):
+    queryset = Submission.objects.raw("SELECT * FROM Submission")
+    serializer_class = SubmissionSerializer
+
+
