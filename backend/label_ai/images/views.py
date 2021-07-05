@@ -97,3 +97,15 @@ class MisLabelledImagesView(APIView):
             parsed_mislabelled_images.append(img_obj)
 
         return JsonResponse(parsed_mislabelled_images, safe=False)
+
+class ImageClassificationPrompt(APIView):
+    def get(self, request, format=None):
+        from django.db import connection, transaction
+        cursor = connection.cursor()
+        query = 'SELECT small_url, original_url, name, class_id\
+                 FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
+                 as a WHERE NOT EXISTS (SELECT * FROM Submission\
+                 WHERE member_id = %s AND class_id = a.class_id) ORDER BY RANDOM() LIMIT %s;'
+        cursor.execute(query,(1,1))
+        image_classification_prompt = cursor.fetchall()
+        return JsonResponse(image_classification_prompt[0], safe=False)
