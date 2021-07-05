@@ -7,8 +7,8 @@ class ClassificationSerializer(serializers.ModelSerializer):
         model = Classification
         fields = (
             "class_id",
-            "confidence",
-            "true_count",
-            "false_count",
-            "pre_classified"
+            "img_id",
+            "label_id",
+            "pre_classified",
+            "confidence"
         )

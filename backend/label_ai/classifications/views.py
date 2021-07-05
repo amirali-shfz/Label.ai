@@ -5,5 +5,5 @@ from .serializers import ClassificationSerializer
 
 
 class ClassificationList(generics.ListAPIView):
-    queryset = Classification.objects.raw("SELECT * FROM Classification")
+    queryset = Classification.objects.raw("SELECT * FROM ClassificationView LIMIT 500")
     serializer_class = ClassificationSerializer

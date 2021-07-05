@@ -36,15 +36,14 @@ class ImagesByLabelView(APIView):
         label_id = request.GET.get("label_id")
         row_ordering = ["i.original_url", "i.img_id" ]
         
-        sql_statement = "SELECT i.original_url, i.img_id FROM classification as c, image as i, label as l \
+        sql_statement = "SELECT i.original_url, i.img_id FROM classificationview as c, image as i, label as l \
             WHERE i.img_id = c.img_id AND c.label_id = l.label_id \
                 AND c.pre_classified = True \
                 AND l.label_id = %s \
-                AND c.confidence >= %s \
-                AND c.true_count + c.false_count >= %s LIMIT %s"
+                AND c.confidence >= %s LIMIT %s"
 
         cursor = connection.cursor()
-        cursor.execute(sql_statement, [label_id, 0, 0, 50]) # TODO: in prod change to [label_id, 0.8, 100, 50]
+        cursor.execute(sql_statement, [label_id, 0, 50]) # TODO: in prod change to [label_id, 0.8, 50]
         label_related_imgs = cursor.fetchall()
 
         parsed_images = []
@@ -76,14 +75,14 @@ class MisLabelledImagesView(APIView):
         cursor = connection.cursor()
 
         cursor.execute("SELECT small_url, img_id FROM image WHERE img_id IN \
-        (SELECT DISTINCT img_id FROM Classification as c, Label as l \
+        (SELECT DISTINCT img_id FROM ClassificationView as c, Label as l \
             WHERE confidence < %s \
             AND pre_classified = %s \
             AND c.label_id = l.label_id LIMIT %s)", (0.5, True, count))
         mislabelled_images = cursor.fetchall()
 
         cursor.execute("SELECT small_url, img_id FROM image WHERE img_id IN \
-        (SELECT DISTINCT img_id FROM Classification as c, Label as l \
+        (SELECT DISTINCT img_id FROM ClassificationView as c, Label as l \
             WHERE confidence < %s \
             AND pre_classified = %s \
             AND c.label_id = l.label_id LIMIT %s)", (0.5, False, count))
