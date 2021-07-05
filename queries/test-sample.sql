@@ -1,8 +1,12 @@
 
--- Query 1
-SELECT image.small_url, label.name
-FROM classification, image, label, (SELECT img_id FROM image ORDER BY RANDOM() LIMIT 1) as a
-WHERE a.img_id = image.img_id AND classification.label_id = label.label_id AND image.img_id = classification.img_id
+-- Query 1: Select 3 images for user (member_id = 1) to classify
+SELECT small_url, original_url, name, class_id
+FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label) as a
+WHERE NOT EXISTS (
+	SELECT * FROM Submission WHERE member_id = 1 AND class_id = a.class_id
+)
+ORDER BY RANDOM()
+LIMIT 3;
 
 -- Query 2
 SELECT i.original_url
