@@ -29,12 +29,9 @@ CREATE TABLE IF NOT EXISTS Member
 CREATE TABLE IF NOT EXISTS Classification
 (
     class_id       SERIAL PRIMARY KEY,
-    confidence     float GENERATED ALWAYS AS (CASE WHEN true_count + false_count = 0 THEN 0 ELSE ((true_count + 1.9208) / (true_count + false_count) - 1.96 * SQRT(CAST ((true_count * false_count) / (true_count + false_count) + 0.9604 AS FLOAT)) / (true_count + false_count)) / (1 + 3.8416 / (true_count + false_count)) END) STORED,
-    true_count     integer NOT NULL,
-    false_count    integer NOT NULL,
-    pre_classified boolean NOT NULL,
     img_id         text NOT NULL,
     label_id       text NOT NULL,
+    pre_classified boolean NOT NULL,
     CONSTRAINT fk_image FOREIGN KEY ( img_id ) REFERENCES Image ( img_id ),
     CONSTRAINT fk_label FOREIGN KEY ( label_id ) REFERENCES Label ( label_id )
 );
