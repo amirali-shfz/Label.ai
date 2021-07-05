@@ -106,17 +106,6 @@ class ImageClassificationPrompt(APIView):
     #     }>
     # }
     def get(self, request, format=None):
-        '''
-        GET /image/prompt?count=num?user_id=num
-        {
-        prompt:
-        Array<
-        url: string,
-        image_id: string,
-        label_name: string>
-        >
-        }
-        '''
         from django.db import connection, transaction
         cursor = connection.cursor()
         query = 'SELECT original_url, name, class_id\
