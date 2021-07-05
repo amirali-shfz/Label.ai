@@ -2,7 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 const api = axios.create({
-    baseURL: 'localhost:3001',
+    baseURL: 'localhost:8000',
     timeout: 8000,
 });
 
@@ -44,4 +44,7 @@ const testApi = {
 
 }
 
-export default testApi;
+// no op
+testApi!;
+
+export default api;

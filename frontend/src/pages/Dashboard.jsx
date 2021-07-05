@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
-import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
@@ -34,9 +33,9 @@ const Contributions = () => {
 const TablesModal = ({tableName}) => {
 
   
-  const [allData, setAllData] = useState({});
-  const [mislabelledData, setMislabelledData] = useState({});
-  const [lowData, setLowData] = useState({});
+  // const [allData, setAllData] = useState({});
+  // const [mislabelledData, setMislabelledData] = useState({});
+  // const [lowData, setLowData] = useState({});
   
   useEffect(()=> {
     // api calls here based on which tablename is selected
