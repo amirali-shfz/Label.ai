@@ -99,8 +99,19 @@ class MisLabelledImagesView(APIView):
         return JsonResponse(parsed_mislabelled_images, safe=False)
 
 class ImageClassificationPrompt(APIView):
-    # GET /images/prompt?count=num,user_id=""
-	# return {prompt:[{url, image_id, labels:[{label_id, label_name, class_id}]}]}
+# GET /images/prompt?count=num?user_id=num
+# {
+# prompt:
+#   Array<{
+#       url: string,
+#       image_id: string,
+#       labels: Array<{
+#           label_id: string,
+#           label_name: string,
+#           class_id: int
+#       }>
+#   }>
+# }
     def get(self, request, format=None):
         from django.db import connection
         count = int(request.GET.get("count")) if request.GET.get("count") else 100
@@ -117,7 +128,11 @@ class ImageClassificationPrompt(APIView):
         images = {}
         for url, img_id, class_id, label_id, label_name in image_classification_prompt:
             images.setdefault(img_id, {"url": url, "labels": []})
-            images[img_id]["labels"].append({"label_id": label_id, "label_name": label_name, "class_id": class_id})
+            images[img_id]["labels"].append({
+                "label_id": label_id,
+                "label_name": label_name,
+                "class_id": class_id
+            })
 
         prompt = []
         for img_id, val in images.items():
