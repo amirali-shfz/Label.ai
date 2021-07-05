@@ -8,8 +8,8 @@ class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
         fields = (
-            "sid",
+            "submission_id",
             "correct_label",
-            "mid",
-            "cid",
+            "member_id",
+            "class_id",
         )

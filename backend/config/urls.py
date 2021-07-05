@@ -12,9 +12,11 @@ urlpatterns = [
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
+
     # User management
     path("users/", include("label_ai.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+
     # Your stuff: custom urls includes go here
     path("members/", include("label_ai.members.urls")),
     path("labels/", include("label_ai.labels.urls")),
@@ -22,7 +24,6 @@ urlpatterns = [
     path("submissions/", include("label_ai.submissions.urls")),
     path("classifications/", include("label_ai.classifications.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

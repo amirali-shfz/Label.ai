@@ -5,7 +5,7 @@ from label_ai.images import views
 
 app_name = "Images"
 urlpatterns = [
-    path("", views.ImagesByLabelView.as_view()),
+    path("confirmed/", views.ImagesByLabelView.as_view()),
     path("all", views.ImageListView.as_view()),
     path("mislabelled/", views.MisLabelledImagesView.as_view()),
     path("underclassified/",views.UnderClassifiedImagesViews.as_view()),

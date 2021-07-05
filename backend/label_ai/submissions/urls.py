@@ -6,6 +6,7 @@ from label_ai.submissions import views
 app_name = "submissions"
 urlpatterns = [
     path("", views.SubmissionList.as_view()),
+    path("insert", views.SubmissionInsert.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

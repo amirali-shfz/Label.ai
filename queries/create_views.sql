@@ -64,7 +64,7 @@ CREATE OR REPLACE VIEW ConfirmedClassification (
 ) AS
 SELECT * FROM
 ClassificationView
-WHERE confidence > 0.95;
+WHERE confidence >= 0.90;
 
 
 -- All the classifications which need more submissions in order to confirm or discredit
@@ -77,4 +77,4 @@ CREATE OR REPLACE VIEW UnconfirmedClassification (
 ) AS
 SELECT *
 FROM ClassificationView
-WHERE confidence >= 0.05 OR confidence <= 0.95;
+WHERE confidence >= 0.05 OR confidence < 0.90;

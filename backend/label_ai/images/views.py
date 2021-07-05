@@ -40,10 +40,10 @@ class ImagesByLabelView(APIView):
             WHERE i.img_id = c.img_id AND c.label_id = l.label_id \
                 AND c.pre_classified = True \
                 AND l.label_id = %s \
-                AND c.confidence >= %s LIMIT %s"
+                AND c.confidence >= %s LIMIT %s;"
 
         cursor = connection.cursor()
-        cursor.execute(sql_statement, [label_id, 0, 50]) # TODO: in prod change to [label_id, 0.8, 50]
+        cursor.execute(sql_statement, [label_id, 0, 50]) # TODO: parameterize limit
         label_related_imgs = cursor.fetchall()
 
         parsed_images = []
@@ -161,13 +161,46 @@ class UnderClassifiedImagesViews(APIView):
 
 
 class ImageClassificationPrompt(APIView):
+# GET /images/prompt?count=num?user_id=num
+# {
+# prompt:
+#   Array<{
+#       url: string,
+#       image_id: string,
+#       labels: Array<{
+#           label_id: string,
+#           label_name: string,
+#           class_id: int
+#       }>
+#   }>
+# }
     def get(self, request, format=None):
-        from django.db import connection, transaction
+        from django.db import connection
+        count = int(request.GET.get("count")) if request.GET.get("count") else 100
+        user_id = int(request.GET.get("user_id"))
+
         cursor = connection.cursor()
-        query = 'SELECT small_url, original_url, name, class_id\
+        query = 'SELECT original_url, img_id, class_id, label_id, name\
                  FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
                  as a WHERE NOT EXISTS (SELECT * FROM Submission\
                  WHERE member_id = %s AND class_id = a.class_id) ORDER BY RANDOM() LIMIT %s;'
-        cursor.execute(query,(1,1))
+        cursor.execute(query,(user_id, count))
+
         image_classification_prompt = cursor.fetchall()
-        return JsonResponse(image_classification_prompt[0], safe=False)
+        images = {}
+        for url, img_id, class_id, label_id, label_name in image_classification_prompt:
+            images.setdefault(img_id, {"url": url, "labels": []})
+            images[img_id]["labels"].append({
+                "label_id": label_id,
+                "label_name": label_name,
+                "class_id": class_id
+            })
+
+        prompt = []
+        for img_id, val in images.items():
+            prompt.append({"url": val["url"], "image_id": img_id, "labels": val["labels"]})
+
+        parsed_out = {"prompt": prompt}
+        
+        return JsonResponse(parsed_out)
+
