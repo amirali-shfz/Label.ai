@@ -16,6 +16,7 @@ urlpatterns = [
     path("users/", include("label_ai.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("members/", include("label_ai.members.urls")),
     path("labels/", include("label_ai.labels.urls")),
     path("images/", include("label_ai.images.urls")),
     path("submissions/", include("label_ai.submissions.urls")),

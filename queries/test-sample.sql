@@ -11,8 +11,7 @@ WHERE i.img_id = c.img_id
 	AND c.label_id = l.label_id
 	AND c.pre_classified = True 
 	AND l.name = `${req.label}` 
-	AND c.confidence > 0.8 
-	AND c.true_count + c.false_count >= 100;
+	AND c.confidence > 0.8;
 
 
 -- Query 3

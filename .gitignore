@@ -1,4 +1,23 @@
+# General
 .vscode
+.DS_Store
+node_modules
+yarn.lock
+venv
+
+# Files
 *.csv
+
+# dataset_processing 
 !dataset_processing/csv/db_ready/*
 !dataset_processing/csv/test_dataset/*
+
+# backend
+backend/bin/
+backend/lib64
+backend/pyvenv.cfg
+backend/share/
+
+# frontend
+frontend/package-lock.json
+

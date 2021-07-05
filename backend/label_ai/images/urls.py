@@ -5,7 +5,10 @@ from label_ai.images import views
 
 app_name = "Images"
 urlpatterns = [
-    path("", views.ImageList.as_view()),
+    path("", views.ImagesByLabelView.as_view()),
+    path("all", views.ImageListView.as_view()),
+    path("mislabelled/", views.MisLabelledImagesView.as_view()),
+    path("prompt",views.ImageClassificationPrompt.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,4 +1,3 @@
--- Create Tables Script
 -- label
 CREATE TABLE IF NOT EXISTS Label
 (
@@ -29,12 +28,9 @@ CREATE TABLE IF NOT EXISTS Member
 CREATE TABLE IF NOT EXISTS Classification
 (
     class_id       SERIAL PRIMARY KEY,
-    confidence     float GENERATED ALWAYS AS (CASE WHEN true_count + false_count = 0 THEN 0 ELSE ((true_count + 1.9208) / (true_count + false_count) - 1.96 * SQRT(CAST ((true_count * false_count) / (true_count + false_count) + 0.9604 AS FLOAT)) / (true_count + false_count)) / (1 + 3.8416 / (true_count + false_count)) END) STORED,
-    true_count     integer NOT NULL,
-    false_count    integer NOT NULL,
-    pre_classified boolean NOT NULL,
     img_id         text NOT NULL,
     label_id       text NOT NULL,
+    pre_classified boolean NOT NULL,
     CONSTRAINT fk_image FOREIGN KEY ( img_id ) REFERENCES Image ( img_id ),
     CONSTRAINT fk_label FOREIGN KEY ( label_id ) REFERENCES Label ( label_id )
 );
@@ -49,13 +45,3 @@ CREATE TABLE IF NOT EXISTS Submission
     CONSTRAINT fk_member FOREIGN KEY ( member_id ) REFERENCES Member ( member_id ),
     CONSTRAINT fk_classification FOREIGN KEY ( class_id ) REFERENCES Classification ( class_id )
 );
-
--- indices
-CREATE INDEX ON Classification ( img_id );
-CREATE INDEX ON Classification ( label_id );
-
-CREATE INDEX ON Submission ( member_id );
-CREATE INDEX ON Submission ( class_id );
-
--- views
-CREATE OR REPLACE VIEW img_label (url, label) AS SELECT original_url, NAME FROM classification NATURAL JOIN label NATURAL JOIN image;
