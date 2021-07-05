@@ -34,16 +34,14 @@ class ImagesByLabelView(APIView):
         
         if not request.GET.get("label_id"): raise Http404() 
         label_id = request.GET.get("label_id")
-        row_ordering = ["i.original_url", "i.img_id" ]
+        row_ordering = ["original_url", "small_url", "img_id" ]
         
-        sql_statement = "SELECT i.original_url, i.img_id FROM classificationview as c, image as i, label as l \
-            WHERE i.img_id = c.img_id AND c.label_id = l.label_id \
-                AND c.pre_classified = True \
-                AND l.label_id = %s \
-                AND c.confidence >= %s LIMIT %s"
+        sql_statement = "SELECT original_url, small_url, img_id \
+            FROM ConfirmedClassification NATURAL JOIN Image \
+            WHERE l.label_id = %s LIMIT %s;"
 
         cursor = connection.cursor()
-        cursor.execute(sql_statement, [label_id, 0, 50]) # TODO: in prod change to [label_id, 0.8, 50]
+        cursor.execute(sql_statement, [label_id, 50]) # TODO: parameterize limit
         label_related_imgs = cursor.fetchall()
 
         parsed_images = []
