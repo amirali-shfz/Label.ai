@@ -4,3 +4,9 @@
 !dataset_processing/csv/test_dataset/*
 
 venv
+backend/bin/
+backend/lib64
+backend/pyvenv.cfg
+backend/share/
+frontend/package-lock.json
+
