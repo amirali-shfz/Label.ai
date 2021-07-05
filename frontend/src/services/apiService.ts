@@ -1,6 +1,5 @@
 import axios from 'axios';
 import _ from 'lodash';
-import { textChangeRangeIsUnchanged } from 'typescript';
 
 const api = axios.create({
     baseURL: 'localhost:3001',
@@ -14,7 +13,7 @@ const returnPromise = (retVal: any) => {
         }, 250);
       });
 }
-const randomString = ():string => {return Math.random.toString().substring(16)}
+const randomString = ():string => {return Math.random().toString().substring(16)}
 
 const testApi = {
     post: async (path:string, args: Object) => {
