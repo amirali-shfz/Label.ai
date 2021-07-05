@@ -5,7 +5,7 @@ from label_ai.labels import views
 
 app_name = "labels"
 urlpatterns = [
-    path("", views.LabelList.as_view()),
+    path("all", views.LabelList.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

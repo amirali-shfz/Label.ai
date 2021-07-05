@@ -10,8 +10,8 @@ class Classification(models.Model):
     true_count = models.IntegerField()
     false_count = models.IntegerField()
     pre_classified = models.BooleanField()
-    iid = models.ForeignKey(Image, models.DO_NOTHING, db_column='iid')
-    lid = models.ForeignKey(Label, models.DO_NOTHING, db_column='lid')
+    img_id = models.ForeignKey(Image, models.DO_NOTHING, db_column='img_id')
+    label_id = models.ForeignKey(Label, models.DO_NOTHING, db_column='label_id')
 
     class Meta:
         db_table = 'classification'

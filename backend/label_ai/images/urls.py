@@ -5,7 +5,8 @@ from label_ai.images import views
 
 app_name = "Images"
 urlpatterns = [
-    path("", views.ImageList.as_view()),
+    path("all", views.ImageList.as_view()),
+    path("mislabelled/", views.MisLabelledImages.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
