@@ -2,11 +2,12 @@ import cApi from "../services/classification/classificationApi";
 import uApi from "../services/user/userApi";
 import { useState, useEffect } from "react";
 import { User } from "../services/user/userModel";
+import _ from 'lodash';
 
 const ClassifyImageModal = () => {
   const [user, setUser] = useState<User | {}>({});
   const [image, setImage] = useState("");
-  const [potentialLabel, setPotentialLabel] = useState("...");
+  const [label, setLabel] = useState<{label_name:string, label_id:string, class_id:string}>({label_name:"", label_id:"",class_id:""});
 
   useEffect(() => {
     uApi.getUser().then((val) => setUser(val));
@@ -16,22 +17,17 @@ const ClassifyImageModal = () => {
     if (image === "") getNewImage();
   }, [image]);
 
-  const randomString = (): string => {
-    return Math.random.toString().substring(16);
-  };
-
   const getNewImage = async () => {
     const result = await cApi.getClassificationProblem();
-    console.log(result);
+    console.log("new image:", result)
     setImage(result?.url);
-    setPotentialLabel(result?.label[0]?.name);
+    setLabel(_.sample(result?.labels));
   };
 
   const buttonClick = (isTrueLabel: boolean) => {
     cApi.postClassificationSolution(
-      randomString(),
-      randomString(),
       isTrueLabel,
+      label,
       user
     );
     getNewImage();
@@ -47,7 +43,7 @@ const ClassifyImageModal = () => {
         alignItems:"space-between"
       }}
     >
-      <h1 style={{ color: "black" }}>Is this a(n) {potentialLabel}</h1>
+      <h1 style={{ color: "black" }}>Is this: {label.label_name}</h1>
       <div style={{ textAlign: "center" }}>
         <img
           src={image}
@@ -92,8 +88,7 @@ const buttonStyle = {
   "text-transform": "uppercase",
   color: "white",
   padding: "5px 15px",
-  "border-radius": "5px",
-  "font-size": "3em",
+  borderRadius: "5px",
 };
 
 export default ClassifyImageModal;
