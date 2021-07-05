@@ -33,7 +33,8 @@ const testApi = {
                     url: _.sample(
                         ['https://c7.staticflickr.com/1/35/70594660_499be9e349_o.jpg',
                          'https://c5.staticflickr.com/9/8185/8121565107_718c80b0ef_o.jpg',
-                         'https://farm3.staticflickr.com/8055/8110769165_9ef5f4da70_o.jpg']),
+                         'https://farm3.staticflickr.com/8055/8110769165_9ef5f4da70_o.jpg',
+                        'https://thumbs.dreamstime.com/b/dubai-uae-february-vertical-panorama-burj-khalifa-as-viewed-water-canal-143096793.jpg']),
                     iid: randomString(),
                     label: [{lid: randomString(), name: randomString()}],
                 })
