@@ -42,7 +42,7 @@ FROM (
 
 
 -- All the classifications which we consider to be incorrect
-CREATE OR REPLACE VIEW Misclassifications (
+CREATE OR REPLACE VIEW Misclassification (
     class_id,
     img_id,
     label_id,
@@ -55,7 +55,7 @@ WHERE confidence < 0.05;
 
 
 -- All the classifications which we consider to be correct
-CREATE OR REPLACE VIEW ConfirmedClassifications (
+CREATE OR REPLACE VIEW ConfirmedClassification (
     class_id,
     img_id,
     label_id,
@@ -68,7 +68,7 @@ WHERE confidence > 0.95;
 
 
 -- All the classifications which need more submissions in order to confirm or discredit
-CREATE OR REPLACE VIEW UnconfirmedClassifications (
+CREATE OR REPLACE VIEW UnconfirmedClassification (
     class_id,
     img_id,
     label_id,
