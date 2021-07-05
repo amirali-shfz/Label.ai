@@ -97,10 +97,18 @@ class MisLabelledImagesView(APIView):
         return JsonResponse(parsed_mislabelled_images, safe=False)
 
 class ImageClassificationPrompt(APIView):
+    # GET /image/prompt
+    # {
+    #     images: Array<{
+    #           original_url: string,
+    #           name: string,
+    #           class_id: int
+    #     }>
+    # }
     def get(self, request, format=None):
         from django.db import connection, transaction
         cursor = connection.cursor()
-        query = 'SELECT small_url, original_url, name, class_id\
+        query = 'SELECT original_url, name, class_id\
                  FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
                  as a WHERE NOT EXISTS (SELECT * FROM Submission\
                  WHERE member_id = %s AND class_id = a.class_id) ORDER BY RANDOM() LIMIT %s;'
