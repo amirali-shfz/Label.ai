@@ -28,7 +28,7 @@ const classificationApi = {
 
   // Core api (blue) 3.1
   getAllLabels: async (): Promise<any> => {
-    const res = await api.get('/labels/all/');
+    const res = await api.get('/labels/all');
     return res.data;
   },
 

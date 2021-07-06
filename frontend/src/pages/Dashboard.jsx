@@ -38,7 +38,7 @@ const Contributions = () => {
 }
 
 const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
-  console.log("confirmed modal data:", data)
+  console.log("confirmed modal label/data:", label, data)
   return (
   <div
   style={{
@@ -57,7 +57,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
         value={label}
         onChange={(event) => {setLabel(event.target.value)}}
       >
-        {allLabels === undefined ? null : allLabels.map(({name}) => {return <MenuItem value={name}>{name}</MenuItem>})}
+        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label}>{label.name}</MenuItem>})}
       </Select>
     </FormControl>
     {data === undefined ? null : data.map(({url}) => {return <img style={{maxHeight:"500px", height:"auto", width:"auto"}} src={url} alt={`example of ${label}`}/>})}
@@ -67,7 +67,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
 const DEFAULT_COUNT = 10;
 const TablesModal = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
-  const [label, setLabel] = useState("");
+  const [label, setLabel] = useState({});
   const [data, setData] = useState([])
 
   const getLabels = async () => {
@@ -103,9 +103,9 @@ const TablesModal = ({tableName: reportName}) => {
   },[allLabels, reportName]);
 
   useEffect(() => {
-    if (label === "" )
+    if (label === {} )
       return;
-    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label); setData(res.images)};
+    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label.label_id); console.log("data from get confirmed image", label, res); setData(res)};
     populateData()
   },[label])
 
@@ -120,7 +120,8 @@ const TablesModal = ({tableName: reportName}) => {
         />
       )
     case "mislabelled":
-      
+    case "underclassified":
+      return (data === undefined? null : data.map((item) => <p>{JSON.stringify(item)}</p> ))
     default:
       return null;
   }
