@@ -152,3 +152,25 @@
       http://localhost:8000/images/prompt
 
 
+# Core Features
+
+
+1. Get random classification prompts
+Parameters for number of prompts and the user
+User must not have classified previously
+Prompts must be unconfirmed (actually need classification)
+
+2. Get random classification prompts by label
+Same 1. With label parameter
+
+3. Submit a user classification - submission
+Parameters for user, classification and their response
+How to handle non-unique case? Triggers?
+
+4. Get all images we are confident fall under a label
+
+5. Get all the images with confident classification which were not previously classified
+
+6. Get all the misclassified images which were previously classified
+
+7. Calculate confidence in classifications
