@@ -1,4 +1,4 @@
-import cApi from "../services/classification/classificationApi";
+import iApi from "../services/image/imageApi";
 import uApi from "../services/user/userApi";
 import { useState, useEffect } from "react";
 import { User } from "../services/user/userModel";
@@ -18,14 +18,14 @@ const ClassifyImageModal = () => {
   }, [image]);
 
   const getNewImage = async () => {
-    const result = await cApi.getClassificationProblem();
+    const result = await iApi.getClassificationProblem();
     console.log("new image:", result)
-    setImage(result?.url);
-    setLabel(_.sample(result?.labels));
+    setImage(result?.prompt[0]?.url);
+    setLabel(_.sample(result?.prompt[0]?.labels));
   };
 
   const buttonClick = (isTrueLabel: boolean) => {
-    cApi.postClassificationSolution(
+    iApi.postClassificationSolution(
       isTrueLabel,
       label,
       user

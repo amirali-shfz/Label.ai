@@ -25,18 +25,36 @@ const testApi = {
         }    
     },
     get: async (path:string) => {
-        switch(path) {
+        const trimmed = path.split('?')[0] 
+        console.log("trimmed request path: ", trimmed)
+        switch(trimmed) {
             case '/user':
                 return returnPromise({})
-            case '/image/random':
+            case '/images/prompt':
                 return returnPromise({
-                    url: _.sample(
-                        ['https://c7.staticflickr.com/1/35/70594660_499be9e349_o.jpg',
-                         'https://c5.staticflickr.com/9/8185/8121565107_718c80b0ef_o.jpg',
-                         'https://farm3.staticflickr.com/8055/8110769165_9ef5f4da70_o.jpg',
-                        'https://thumbs.dreamstime.com/b/dubai-uae-february-vertical-panorama-burj-khalifa-as-viewed-water-canal-143096793.jpg']),
-                    iid: randomString(),
-                    label: [{lid: randomString(), name: randomString()}],
+                    prompt: [
+                        {
+                            url: _.sample(
+                            ['https://c7.staticflickr.com/1/35/70594660_499be9e349_o.jpg',
+                            'https://c5.staticflickr.com/9/8185/8121565107_718c80b0ef_o.jpg',
+                            'https://farm3.staticflickr.com/8055/8110769165_9ef5f4da70_o.jpg',
+                            'https://thumbs.dreamstime.com/b/dubai-uae-february-vertical-panorama-burj-khalifa-as-viewed-water-canal-143096793.jpg']),
+                            image_id: randomString(),
+                            labels: [{label_id: randomString(), label_name: randomString(), class_id: randomString()}],}
+                        ]
+                });
+            case '/labels/all':
+                return returnPromise({
+                    labels: [{label_id: '1', label_name: 'label 1'},{label_id: '2', label_name: 'label 2'},{label_id: '3', label_name: 'label 3'} ]
+                });
+            case '/images/confirmed':
+            case '/images/mislabelled':
+            case '/images/underclassified':
+                return returnPromise({
+                    images: [{url: 'https://c7.staticflickr.com/1/35/70594660_499be9e349_o.jpg'},
+                    {url:'https://c5.staticflickr.com/9/8185/8121565107_718c80b0ef_o.jpg'},
+                    {url:'https://farm3.staticflickr.com/8055/8110769165_9ef5f4da70_o.jpg'},
+                    {url:'https://thumbs.dreamstime.com/b/dubai-uae-february-vertical-panorama-burj-khalifa-as-viewed-water-canal-143096793.jpg'}]
                 })
         }
 
@@ -46,5 +64,6 @@ const testApi = {
 
 // no op
 testApi!;
+api!;
 
-export default api;
+export default testApi;

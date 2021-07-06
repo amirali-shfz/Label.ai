@@ -28,8 +28,15 @@ const classificationApi = {
     return await api.get(`/images/confirmed?label_id="${labelId}"?`);
   },
 
+  // 5.1
+  getMislabelledImages: async (n:number): Promise<any> => {
+    return await api.get(`/images/mislabelled?count=${n}`);
+  },
 
-
+  // 5.2
+  getUnderclassifiedImages: async (n:number): Promise<any> => {
+    return await api.get(`/images/underclassified?count=${n}`);
+  },
 };
 
 export default classificationApi;
