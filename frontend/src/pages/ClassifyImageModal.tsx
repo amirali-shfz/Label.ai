@@ -11,7 +11,7 @@ const ClassifyImageModal = () => {
 
   useEffect(() => {
     uApi.getUser().then((val) => setUser(val));
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (image === "") getNewImage();
@@ -19,7 +19,6 @@ const ClassifyImageModal = () => {
 
   const getNewImage = async () => {
     const result = await iApi.getClassificationProblem();
-    console.log("new image:", result)
     setImage(result?.prompt[0]?.url);
     setLabel(_.sample(result?.prompt[0]?.labels));
   };
