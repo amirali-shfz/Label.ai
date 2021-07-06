@@ -3,12 +3,13 @@ import { User } from './userModel';
 
 const userApi = {
   getUser: async (): Promise<User> => {
-    const user : any = await api.get('/user');
+    const res : any = await api.get('/members/all');
+    const user = res.data[0]
     return new User({userId: user.uid, username: user.username, trust:user.trust})
   },
 
   createUser: async (firstName: string, lastName: string, username: string, password:string) => {
-    await api.post('/user', {
+    await api.post('/members', {
       firstName,
       lastName,
       username,
