@@ -9,8 +9,8 @@ venv
 *.csv
 
 # dataset_processing 
-!dataset_processing/csv/db_ready/*
-!dataset_processing/csv/test_dataset/*
+!dataset_processing/prod_dataset/*
+!dataset_processing/test_dataset/*
 
 # backend
 backend/bin/
