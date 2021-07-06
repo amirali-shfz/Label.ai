@@ -73,6 +73,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "reset_migrations",
     "rest_framework",
+    "corsheaders",
 ]
 LOCAL_APPS = [
     "label_ai.users.apps.UsersConfig",
@@ -137,7 +138,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True 
+CORS_ALLOW_CREDENTIALS = True
 
 # STATIC
 # ------------------------------------------------------------------------------
