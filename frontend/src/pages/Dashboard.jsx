@@ -38,7 +38,7 @@ const Contributions = () => {
 }
 
 const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
-  console.log("data:", data)
+  console.log("confirmed modal label/data:", label, data)
   return (
   <div
   style={{
@@ -57,7 +57,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
         value={label}
         onChange={(event) => {setLabel(event.target.value)}}
       >
-        {allLabels === undefined ? null : allLabels.map(({label_name}) => {return <MenuItem value={label_name}>{label_name}</MenuItem>})}
+        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label}>{label.name}</MenuItem>})}
       </Select>
     </FormControl>
     {data === undefined ? null : data.map(({url}) => {return <img style={{maxHeight:"500px", height:"auto", width:"auto"}} src={url} alt={`example of ${label}`}/>})}
@@ -65,14 +65,14 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
 }
 
 const DEFAULT_COUNT = 10;
-const TablesModal = ({tableName}) => {
+const TablesModal = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
-  const [label, setLabel] = useState("");
+  const [label, setLabel] = useState({});
   const [data, setData] = useState([])
 
   const getLabels = async () => {
     const res = await iApi.getAllLabels()
-    setAllLabels(res.labels);
+    setAllLabels(res);
   };
 
   const getMislabelled = async () => {
@@ -86,7 +86,7 @@ const TablesModal = ({tableName}) => {
   };
   useEffect(()  => {
     // api calls here based on which tablename is selected
-    switch(tableName){
+    switch(reportName){
       case "labels":
         if(allLabels !== undefined)
           break;
@@ -100,23 +100,32 @@ const TablesModal = ({tableName}) => {
         break;
       default:
     }
-  },[allLabels, tableName]);
+  },[allLabels, reportName]);
 
   useEffect(() => {
-    if (label === "" )
+    if (label === {} )
       return;
-    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label); setData(res.images)};
+    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label.label_id); console.log("data from get confirmed image", label, res); setData(res)};
     populateData()
   },[label])
 
-  return (
-    <ConfirmedModal 
-      allLabels={allLabels}
-      label={label}
-      setLabel={setLabel}
-      data={data}
-    />
-  )
+  switch(reportName){
+    case "labels":
+      return (
+        <ConfirmedModal 
+          allLabels={allLabels}
+          label={label}
+          setLabel={setLabel}
+          data={data}
+        />
+      )
+    case "mislabelled":
+    case "underclassified":
+      return (data === undefined? null : data.map((item) => <p>{JSON.stringify(item)}</p> ))
+    default:
+      return null;
+  }
+  
 }
 
 const drawerWidth = 240;
