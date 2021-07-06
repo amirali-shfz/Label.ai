@@ -3,7 +3,7 @@ from django.http.response import JsonResponse
 from rest_framework import generics
 from rest_framework.views import APIView
 
-from label_ai import classifications, submissions
+from label_ai import submissions
 
 from .models import Submission
 from .serializers import SubmissionSerializer
@@ -15,12 +15,10 @@ class SubmissionList(generics.ListAPIView):
 
 
 class SubmissionInsert(APIView):
-
     def post(self, request, format=None):
         correct_label = request.POST.get('correct_label')
         member_id = request.POST.get('member_id')
         class_id = request.POST.get('class_id')
-        print(correct_label, member_id, class_id)
         cursor = connection.cursor()
 
         cursor.execute("""
