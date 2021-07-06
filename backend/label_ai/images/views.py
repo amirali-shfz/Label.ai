@@ -34,7 +34,7 @@ class ImagesByLabelView(APIView):
         
         if not request.GET.get("label_id"): raise Http404() 
         label_id = request.GET.get("label_id")
-        row_ordering = ["original_url", "small_url", "img_id" ]
+        row_ordering = ["url", "img_id" ]
         
         sql_statement = "SELECT i.original_url, i.img_id FROM classificationview as c, image as i, label as l \
             WHERE i.img_id = c.img_id AND c.label_id = l.label_id \
@@ -56,7 +56,6 @@ class ImagesByLabelView(APIView):
 
         return JsonResponse(parsed_images, safe=False)
 
-
 class MisLabelledImagesView(APIView):
 
     # GET /image/mislabelled/?count=num
@@ -64,39 +63,102 @@ class MisLabelledImagesView(APIView):
     #     images: Array<{
     #         url:string
     #         image_id: string
+    #         labels: Array<{ label_id: string, name: string  }>       
     #     }>
     # }
     def get(self, request, format=None):
         from django.db import connection, transaction
 
-        count = int(request.GET.get("count")) if request.GET.get("count") and int(request.GET.get("count")) < 100 else 25
-        row_ordering = ["url", "img_id"]
+        count = int(request.GET.get("count")) if request.GET.get("count") and int(request.GET.get("count")) < 500 else 500
+        row_ordering = {
+            "original_url": 0, 
+            "name": 1, 
+            "img_id": 2, 
+            "label_id": 3
+        }
 
         cursor = connection.cursor()
+        cursor.execute("SELECT original_url, name, img_id, label_id \
+        FROM MisClassification NATURAL JOIN Image NATURAL JOIN Label \
+        WHERE pre_classified LIMIT %s", [count])
+        ml_images = cursor.fetchall()
 
-        cursor.execute("SELECT small_url, img_id FROM image WHERE img_id IN \
-        (SELECT DISTINCT img_id FROM ClassificationView as c, Label as l \
-            WHERE confidence < %s \
-            AND pre_classified = %s \
-            AND c.label_id = l.label_id LIMIT %s)", (0.5, True, count))
-        mislabelled_images = cursor.fetchall()
+        parsed_ml_images = []
+        parsed_image_map = {}
 
-        cursor.execute("SELECT small_url, img_id FROM image WHERE img_id IN \
-        (SELECT DISTINCT img_id FROM ClassificationView as c, Label as l \
-            WHERE confidence < %s \
-            AND pre_classified = %s \
-            AND c.label_id = l.label_id LIMIT %s)", (0.5, False, count))
+        for image in ml_images:
+            url = image[row_ordering["original_url"]]
+            img_id = image[row_ordering["img_id"]]
+            label_id = image[row_ordering["label_id"]]
+            name = image[row_ordering["name"]]
+             
+            if img_id not in parsed_image_map: 
+                parsed_image_map[img_id] = len(parsed_ml_images)
+                parsed_ml_images.append({
+                    "img_id": img_id,
+                    "url": url,
+                    "labels": []
+                })
 
-        mislabelled_images.extend(cursor.fetchall())
-        parsed_mislabelled_images = []
+            parsed_ml_images[parsed_image_map[img_id]]["labels"].append({
+                "label_id": label_id,
+                "name": name
+            })        
 
-        for image in mislabelled_images:
-            img_obj = {}
-            for i, val in enumerate(image):
-                img_obj[row_ordering[i]] = val
-            parsed_mislabelled_images.append(img_obj)
+        return JsonResponse(parsed_ml_images, safe=False)
 
-        return JsonResponse(parsed_mislabelled_images, safe=False)
+
+class UnderClassifiedImagesViews(APIView):
+
+    # GET /image/underclassified/?count=num
+    # {
+    #     images: Array<{
+    #         url:string
+    #         image_id: string
+    #         labels: Array<{ label_id: string, name: string  }>       
+    #     }>
+    # }
+    def get(self, request, format=None):
+        from django.db import connection, transaction
+
+        count = int(request.GET.get("count")) if request.GET.get("count") and int(request.GET.get("count")) < 500 else 500
+        row_ordering = {
+            "original_url": 0, 
+            "name": 1, 
+            "img_id": 2, 
+            "label_id": 3
+        }
+
+        cursor = connection.cursor()
+        cursor.execute("SELECT original_url, name, img_id, label_id \
+        FROM ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label \
+        WHERE NOT pre_classified LIMIT %s", [count])
+        uc_images = cursor.fetchall()
+
+        parsed_uc_images = []
+        parsed_image_map = {}
+        
+        for image in uc_images:
+            url = image[row_ordering["original_url"]]
+            img_id = image[row_ordering["img_id"]]
+            label_id = image[row_ordering["label_id"]]
+            name = image[row_ordering["name"]]
+             
+            if img_id not in parsed_image_map: 
+                parsed_image_map[img_id] = len(parsed_uc_images)
+                parsed_uc_images.append({
+                    "img_id": img_id,
+                    "url": url,
+                    "labels": []
+                })
+
+            parsed_uc_images[parsed_image_map[img_id]]["labels"].append({
+                "label_id": label_id,
+                "name": name
+            })        
+
+        return JsonResponse(parsed_uc_images, safe=False)
+
 
 class ImageClassificationPrompt(APIView):
 # GET /images/prompt?count=num?user_id=num
