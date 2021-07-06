@@ -78,7 +78,6 @@ LIMIT %s;
 
 -- 6. Get image labels that have not been verified (i.e. potential extra labels for images)
 -- To ensure that all label/pairs are consistently tested, Label.ai will occasionally query labels that need more verification from labellers. Labels that fit this category are labels which have an average confidence that is close to 0.23 (i.e. labellers are not sure if the label corresponds to the image) and labels that have a low total number of verifications from labellers. The following query will select these labels-image pairings, which will have a greater chance of appearing on future label-image pairing lists for labellers.
-
 SELECT label_id, AVG(confidence) as average_conf
 FROM ClassificationView
 GROUP BY label_id HAVING AVG(confidence) > 0.15 AND AVG(confidence) < 0.7
