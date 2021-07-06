@@ -8,6 +8,7 @@ from label_ai import submissions
 from .models import Submission
 from .serializers import SubmissionSerializer
 
+from json import loads
 
 class SubmissionList(generics.ListAPIView):
     queryset = Submission.objects.raw("SELECT * FROM Submission")
@@ -16,9 +17,10 @@ class SubmissionList(generics.ListAPIView):
 
 class SubmissionInsert(APIView):
     def post(self, request, format=None):
-        correct_label = request.POST.get('correct_label')
-        member_id = request.POST.get('member_id')
-        class_id = request.POST.get('class_id')
+        body = loads(request.body.decode('utf-8'))
+        correct_label = body['correct_label']
+        member_id = body['member_id']
+        class_id = body['class_id']
         cursor = connection.cursor()
 
         cursor.execute("""
