@@ -55,6 +55,11 @@
    ```bash
    source venv/bin/activate
    ```
+   
+   ### Windows
+   ```bash
+   ./venv/Scripts/activate.bat
+   ```
 3. install requirements:
    ```bash
    pip install -r requirements/local.txt
@@ -63,11 +68,19 @@
    ```bash
    createdb label_ai -U postgres --password <password>
    ```
+   
+   ### Windows
+   ```bash
+   createdb -U postgres label_ai
+   ```
 5. Set the environment variables for your database:
    ```bash
    export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/label_ai
    ```
-
+   ### Windows
+   ```bash
+   set DATABASE_URL=postgres://postgres@127.0.0.1:5432/label_ai
+   ```
 6. Apply migrations:
 
    ```bash
@@ -152,3 +165,25 @@
       http://localhost:8000/images/prompt
 
 
+# Core Features
+
+
+1. Get random classification prompts
+Parameters for number of prompts and the user
+User must not have classified previously
+Prompts must be unconfirmed (actually need classification)
+
+2. Get random classification prompts by label
+Same 1. With label parameter
+
+3. Submit a user classification - submission
+Parameters for user, classification and their response
+How to handle non-unique case? Triggers?
+
+4. Get all images we are confident fall under a label
+
+5. Get all the images with confident classification which were not previously classified
+
+6. Get all the misclassified images which were previously classified
+
+7. Calculate confidence in classifications

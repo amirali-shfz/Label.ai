@@ -56,7 +56,8 @@ VALUES(<correctlabel>,<memberid>,<classificationid>)
 
 SELECT original_url, img_id
 FROM ConfirmedClassification NATURAL JOIN Image
-WHERE label_id = %s LIMIT %s;
+WHERE label_id = %s
+LIMIT %s;
 
 -- 5. Find Mislabelled Images (SFW)
 -- In the database, each picture to label classification is assigned a source of truth (valued True if the label corresponds to the picture and False otherwise). This source of truth is the perceived source of truth by the client when they have inputted the image into Label.ai initially. After verification, the client can see which images / associated labels that they have “under classified” or “incorrectly classified”. Under classified images are images which are missing labels that should of been there. For example, an image which has a car and a human but is only labelled human is an under classified image. Incorrectly classified images are images which is given an incorrecty label. For example, a picture with just a cat but is labelled as dog is an incorrectly classified image. 
@@ -66,22 +67,26 @@ WHERE label_id = %s LIMIT %s;
 -- Under Classified
 SELECT original_url, name, img_id, label_id
 FROM ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label 
-WHERE NOT pre_classified;
+WHERE NOT pre_classified
+LIMIT %s;
 
 -- Incorrectly Classified
 SELECT original_url, name, img_id, label_id
 FROM MisClassification NATURAL JOIN Image NATURAL JOIN Label
-WHERE pre_classified;
+WHERE pre_classified
+LIMIT %s;
 
 -- 6. Get image labels that have not been verified (i.e. potential extra labels for images)
 -- To ensure that all label/pairs are consistently tested, Label.ai will occasionally query labels that need more verification from labellers. Labels that fit this category are labels which have an average confidence that is close to 0.23 (i.e. labellers are not sure if the label corresponds to the image) and labels that have a low total number of verifications from labellers. The following query will select these labels-image pairings, which will have a greater chance of appearing on future label-image pairing lists for labellers.
-
-SELECT label_id, AVG(confidence) as average_conf FROM ClassificationView GROUP BY label_id HAVING AVG(confidence) > 0.15 AND AVG(confidence) < 0.7;
+SELECT label_id, AVG(confidence) as average_conf
+FROM ClassificationView
+GROUP BY label_id HAVING AVG(confidence) > 0.15 AND AVG(confidence) < 0.7
+LIMIT %s;
 
 -- 7. Custom Addition of Picture/Classifications/Labels/Submissions
 -- Users who want their datasets verified can also make requests to Label.ai for specific images to be added and the list of labels that they want the image to be verified against. These images will be stored in Label.ai’s db and will randomly appear on the lists of image-label pairs that the labellers need to verify.
 
-INSERT INTO submission Values(True, 3, 8)
+INSERT INTO submission Values(0,'t', 3, 8);
 INSERT into image Values(10000, 'https://farm6.staticflickr.com/2300/2041178335_8fc60e09fe_o.jpg','https://c5.staticflickr.com/3/2300/2041178335_da4967c386_z.jpg?zz=1', 0);
 INSERT INTO label VALUES(10000, 'window');
-INSERT INTO classification VALUES(10001, 0,0,0, 't', 10000, 10000);
+INSERT INTO classification VALUES(10000004,'4d4b4f850df89aaf','015p6','t');

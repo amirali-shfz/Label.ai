@@ -1,17 +1,18 @@
-# Dataset Preprocessing
+# Dataset Processing
 
 ## To Use
-Navigate to the `dataset_preprocessing` directory
-Get modules `python -m pip install -r requirements.txt`
+Navigate to the root directory (`dataset_processing/..`)
+Get modules `python -m pip install -r dataset_processing/requirements.txt`
 
 ### Download CSV files
-`python download_csv.py`
+`python dataset_processing/download_csv.py`
 
 ### Filter the CSV files
-`python filter_csv.py`
+`PYTHONHASHSEED=1 python dataset_processing/filter_csv.py`
 
-### Generate the test dataset
-`python generate_test_dataset.py`
+### Generate the test and production dataset
+`python dataset_processing/convert_to_db_format.py`
+`python dataset_processing/generate_submission_data.py`
 
 ## Important Links
 https://storage.googleapis.com/openimages/web/download.html

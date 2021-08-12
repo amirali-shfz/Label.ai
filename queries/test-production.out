@@ -1,0 +1,103 @@
+1.
+CREATE VIEW
+
+(Queried the resulting view)
+SELECT * FROM ClassificationView LIMIT 10;
+
+ class_id |      img_id      | label_id | pre_classified |     confidence     
+----------+------------------+----------+----------------+--------------------
+        1 | 000ccf1d00f7f1cd | 04rky    | t              | 0.2365895936154873
+        2 | 000ccf1d00f7f1cd | 01lrl    | t              | 0.2365895936154873
+        3 | 000ccf1d00f7f1cd | 0bt9lr   | t              | 0.2365895936154873
+        4 | 001a695ad732152b | 0463sg   | t              | 0.2365895936154873
+        5 | 001a695ad732152b | 09j2d    | t              | 0.2365895936154873
+        6 | 001a695ad732152b | 04hgtk   | t              | 0.2365895936154873
+        7 | 001a695ad732152b | 01g317   | t              | 0.2365895936154873
+        8 | 001a695ad732152b | 0dzct    | t              | 0.2365895936154873
+        9 | 001a695ad732152b | 02dl1y   | t              | 0.2365895936154873
+       10 | 001a695ad732152b | 03q69    | f              | 0.2365895936154873
+(10 rows)
+
+2.
+Parameters: (member_id=10, limit=10)
+
+                           original_url                           |      img_id      | class_id | label_id |     name     
+------------------------------------------------------------------+------------------+----------+----------+--------------
+ https://farm7.staticflickr.com/3617/3629446440_31d8011e63_o.jpg  | 5531a3359ab88b96 |     4653 | 09j2d    | Clothing
+ https://farm5.staticflickr.com/1001/1239669933_0bb5cc05ab_o.jpg  | f1ed70e1179dbde4 |    12667 | 0k65p    | Human hand
+ https://c5.staticflickr.com/5/4055/4390652652_d0330a5856_o.jpg   | 8d8b6a7c92a0631c |     7512 | 015p6    | Bird
+ https://c3.staticflickr.com/6/5692/21185289212_2bd19a491e_o.jpg  | 596affd29cf0e8ba |     4837 | 07yv9    | Vehicle
+ https://farm2.staticflickr.com/2852/9579813047_93326c66bf_o.jpg  | 85ae4517290134a1 |     7125 | 07yv9    | Vehicle
+ https://c4.staticflickr.com/1/394/19639099184_ac6bc6e6d8_o.jpg   | da35c6c942d80b9b |    11394 | 07j7r    | Tree
+ https://farm4.staticflickr.com/142/365125280_f928277321_o.jpg    | 336036490e882aa3 |     2951 | 01prls   | Land vehicle
+ https://farm8.staticflickr.com/6025/5886876153_d9aa1991b0_o.jpg  | a6238c8b8c4f8fd7 |     8808 | 0dzf4    | Human arm
+ https://farm8.staticflickr.com/5710/20066043644_677627e6e8_o.jpg | 98d96739d99514f7 |     8055 | 01g317   | Person
+ https://farm3.staticflickr.com/5025/5601670147_cfd51f2a30_o.jpg  | b5ec2abb128ad582 |     9655 | 04hgtk   | Human head
+(10 rows)
+
+ 3.
+Parameters (correct_label='t', member_id=1, class_id=1)
+INSERT 0 1
+
+ 4.
+Parameters(label_id='015p6', limit=10)
+(the label_id='015p6' is the label_id for label with name 'Bird')
+
+                          original_url                           |      img_id      
+-----------------------------------------------------------------+------------------
+ https://c4.staticflickr.com/9/8430/7859455234_ea6013d0b8_o.jpg  | 0230faae1c2e77bb
+ https://farm7.staticflickr.com/7028/6629456275_f8d24bc4d5_o.jpg | 02361af85520b6d6
+ https://c7.staticflickr.com/9/8444/7861547910_0da25d2a75_o.jpg  | 06d0334ff6e9797e
+ https://c5.staticflickr.com/9/8297/7980624680_595a7be6e6_o.jpg  | 0a439f5ecda0086c
+ https://c6.staticflickr.com/3/2624/4218755114_ea0d4a3e42_o.jpg  | 0f2a8089b4611dfd
+ https://farm2.staticflickr.com/9/183137727_96d6cae5df_o.jpg     | 119fd7a102c23481
+ https://farm8.staticflickr.com/8525/8527850869_a9935bf2c1_o.jpg | 1423ce7696c763e7
+ https://farm8.staticflickr.com/4021/4250449063_7e035ee3d5_o.jpg | 18d6032b6f706057
+ https://farm2.staticflickr.com/3549/3319575491_179429aeed_o.jpg | 19d4624868a40e71
+ https://farm2.staticflickr.com/6209/6094726963_21ecfd2ec7_o.jpg | 2046e7b17b4f41a1
+ (10 rows)
+
+ 5.
+ Under Classified
+ Parameters(limit=7)
+                          original_url                           | name |      img_id      | label_id 
+-----------------------------------------------------------------+------+------------------+----------
+ https://farm7.staticflickr.com/7028/6629456275_f8d24bc4d5_o.jpg | Bird | 02361af85520b6d6 | 015p6
+ https://c8.staticflickr.com/9/8489/8279045830_7117f348ca_o.jpg  | Bird | 48f16618c2da88ff | 015p6
+ https://c8.staticflickr.com/4/3410/3328266418_1e9eced7f3_o.jpg  | Bird | 7e52a251c93ff76f | 015p6
+ https://farm3.staticflickr.com/2148/2162084040_42d0e59938_o.jpg | Bird | ac5fc2ac4ed2c0d2 | 015p6
+ https://c7.staticflickr.com/6/5129/5338942186_5706618a77_o.jpg  | Bird | d7e0ec4b33b640ae | 015p6
+ https://c2.staticflickr.com/8/7190/6880690979_f159deaa5d_o.jpg  | Bird | f8bece1e91356409 | 015p6
+ https://farm4.staticflickr.com/3116/2558397959_340ef2493b_o.jpg | Bird | fc5ffa3c44d8b203 | 015p6
+(7 rows)
+
+ Incorrectly Classified
+ Parameters(limit=2)
+                          original_url                           | name  |      img_id      | label_id 
+-----------------------------------------------------------------+-------+------------------+----------
+ https://farm5.staticflickr.com/3289/2826472468_e72c43fd94_o.jpg | Apple | 026f61bf6565c8e4 | 014j1m
+ https://c1.staticflickr.com/5/4135/4791921423_16d7f6e277_o.jpg  | Apple | c04044e50ac8fe48 | 014j1m
+(2 rows)
+
+6.
+Parameter(limit=10)
+
+ label_id |    average_conf     
+----------+---------------------
+ 015p6    |  0.3421488969819174
+ 0cyhj_   | 0.23658959361548731
+ 04vv5k   |  0.2365895936154873
+ 0ftb8    |  0.2365895936154873
+ 0nybt    |  0.2365895936154873
+ 02z51p   |  0.2365895936154873
+ 07j7r    | 0.23658959361548657
+ 0czz2    | 0.23658959361548734
+ 0hqkz    |  0.2365895936154873
+ 02vkqh8  |  0.2365895936154873
+(10 rows)
+
+7.
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
