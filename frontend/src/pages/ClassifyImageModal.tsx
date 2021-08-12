@@ -42,7 +42,7 @@ const ClassifyImageModal = () => {
         alignItems:"space-between"
       }}
     >
-      <h1 style={{ color: "black" }}>Is this: {label.label_name}</h1>
+      <h1 style={{ color: "black" }}>Does this image contain: {label.label_name}</h1>
       <div style={{ textAlign: "center" }}>
         <img
           src={image}

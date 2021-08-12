@@ -18,7 +18,7 @@ const classificationApi = {
   // Core api (blue) 2.2
   postClassificationSolution: async (solution:boolean, label: any, user: Partial<User>) => {
     const uid = user.userId || "1";
-    await api.post('/submissions/insert/', {
+    await api.post('/submissions/insert', {
       class_id: label.class_id,
       correct_label: 't',
       member_id: uid
