@@ -68,6 +68,7 @@
    ```bash
    createdb label_ai -U postgres --password <password>
    ```
+   
    ### Windows
    ```bash
    createdb -U postgres label_ai
