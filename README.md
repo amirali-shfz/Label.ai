@@ -55,6 +55,11 @@
    ```bash
    source venv/bin/activate
    ```
+   
+   ### Windows
+   ```bash
+   ./venv/Scripts/activate.bat
+   ```
 3. install requirements:
    ```bash
    pip install -r requirements/local.txt
@@ -63,11 +68,19 @@
    ```bash
    createdb label_ai -U postgres --password <password>
    ```
+   ### Windows
+   ```bash
+   createdb -U postgres label_ai
+   ```
 5. Set the environment variables for your database:
    ```bash
    export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/label_ai
    ```
 
+  ### Windows
+  ```bash
+  set DATABASE_URL=postgres://postgres@127.0.0.1:5432/label_ai
+  ```
 6. Apply migrations:
 
    ```bash
