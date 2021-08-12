@@ -77,11 +77,10 @@
    ```bash
    export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/label_ai
    ```
-
-  ### Windows
-  ```bash
-  set DATABASE_URL=postgres://postgres@127.0.0.1:5432/label_ai
-  ```
+   ### Windows
+   ```bash
+   set DATABASE_URL=postgres://postgres@127.0.0.1:5432/label_ai
+   ```
 6. Apply migrations:
 
    ```bash
