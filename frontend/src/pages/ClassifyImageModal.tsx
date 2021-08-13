@@ -23,7 +23,7 @@ const ClassifyImageModal = () => {
     setLabel(_.sample(result?.prompt[0]?.labels));
   };
 
-  const buttonClick = (isTrueLabel: boolean) => {
+  const buttonClick = (isTrueLabel: boolean|null) => {
     iApi.postClassificationSolution(
       isTrueLabel,
       label,
@@ -69,7 +69,7 @@ const ClassifyImageModal = () => {
         </button>
         <button
           onClick={() => {
-            getNewImage();
+            buttonClick(null);
           }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "grey" })}
         >
