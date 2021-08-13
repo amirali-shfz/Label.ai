@@ -29,13 +29,14 @@ const ClassifyImageModal = (props: {
       getNewImage();
       return;
     }
-    if (label.label_id !== labelFilter) {
+    if (labelFilter !== "" && 
+        label.label_id !== labelFilter) {
       console.log(
         "Labels do not match. cur, filt",
         label.label_id,
         labelFilter
       );
-      // getNewImage();
+      getNewImage();
       return;
     }
   }, [image, label, labelFilter]);
@@ -43,7 +44,7 @@ const ClassifyImageModal = (props: {
   const getNewImage = async () => {
     const result = await iApi.getClassificationProblem({
       user_id: user?.userId ?? "-1",
-      label: labelFilter,
+      label_id: labelFilter,
       count: 1,
     });
     setImage(result?.prompt[0]?.url);

@@ -111,6 +111,8 @@ export default function Dashboard() {
 
   const userLogin = (username, password) => {
     if (!(username in allUsers)) return false;
+    if (password !== allUsers[username].password) return false;
+    
     setUser({
       username,
       ...allUsers[username],
@@ -216,7 +218,7 @@ export default function Dashboard() {
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            {!user?.admin ? (
+            {user?.is_admin ? (
               <ListItem
                 button
                 onClick={() => {
