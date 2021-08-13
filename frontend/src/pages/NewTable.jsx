@@ -19,7 +19,7 @@ const tableTextStyle = {
   //fontSize:"40px" // TODO: make text look nice
 };
 
-export default function ConfidenceTable({rows}) {
+export default function NewConfidenceTable({rows}) {
   const classes = useStyles();
 
   return (
@@ -27,7 +27,8 @@ export default function ConfidenceTable({rows}) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="middle">Image</TableCell>
+            <TableCell>Image</TableCell>
+            <TableCell align="middle">Label</TableCell>
             <TableCell align="middle">Total Votes</TableCell>
             <TableCell align="middle">Confidence</TableCell>
             <TableCell align="middle">Url</TableCell>
@@ -36,12 +37,13 @@ export default function ConfidenceTable({rows}) {
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.img_id}>
-              <TableCell align="middle" component="th" scope="row">
+              <TableCell component="th" scope="row">
                 <img 
                 onError={(e) => e.target.removeAttribute('src')} 
                 style={{maxHeight:"400px", maxWidth:"400px"}} 
                 src={row.url} alt={`example of ${row.label_id}`}/>
               </TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{row.label}</TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{Math.round(row.total_votes)}</TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{row.confidence}</TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="middle">
