@@ -21,13 +21,15 @@ USER_ID_RANGE = range(1, NUM_USERS+1)
 passwords = ["password123"]*NUM_USERS
 
 trusts = []
+is_admin = []
 for _ in usernames:
     trusts.append(random.uniform(MIN_TRUST, MAX_TRUST))
+    is_admin.append(random.uniform(0, 1) > 0.9)
 
 users = pd.DataFrame(
-    zip(usernames, passwords, trusts, usernames),
+    zip(usernames, passwords, trusts, usernames, is_admin),
     index=USER_ID_RANGE,
-    columns=["Username", "Password", "Trust", "Name"])
+    columns=["Username", "Password", "Trust", "Name", "IsAdmin"])
 
 users.to_csv('./dataset_processing/prod_dataset/member.csv')
 

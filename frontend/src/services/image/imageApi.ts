@@ -39,6 +39,18 @@ const classificationApi = {
     return res.data;
   },
 
+  getImages: async(endpoint:string, count:number, label_id:string|null = null): Promise<Array<Object>> => {
+
+    var params : any = {'count' : count}
+    if (label_id && label_id.length) {
+      params.label_id = label_id
+    }
+    console.log(params)
+    console.log(label_id)
+    const res = await api.get(`/images/${endpoint}/`, {params: params});
+    return res.data;
+  },
+
   // Core api (blue) 3.2
   getConfirmedImagesByLabel: async (label_id: string): Promise<any> => {
     const res = await api.get(`/images/confirmed/`, {
