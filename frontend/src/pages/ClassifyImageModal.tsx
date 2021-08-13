@@ -1,12 +1,14 @@
 import iApi from "../services/image/imageApi";
-
+import Select from "@material-ui/core/Select";
 import { useState, useEffect } from "react";
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
 import { User } from "../services/user/userModel";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 
-
-const ClassifyImageModal = (props:{user: User, allLabels: Array<{label_id: string}>}) => {
+const ClassifyImageModal = (props:{user: User | undefined, allLabels: Array<{label_id: string, name: string}>}) => {
 
   const {user, allLabels} = props;
   const [labelFilter, setLabelFilter] = useState("");
@@ -14,11 +16,24 @@ const ClassifyImageModal = (props:{user: User, allLabels: Array<{label_id: strin
   const [label, setLabel] = useState<{label_name:string, label_id:string, class_id:string}>({label_name:"", label_id:"",class_id:""});
 
   useEffect(() => {
-    if (image === "") getNewImage();
-  }, [image]);
+    if (image === "") {
+      getNewImage();
+      return;
+    }
+    if (label.label_id !== labelFilter) {
+      console.log("Labels do not match. cur, filt", label.label_id, labelFilter)
+      //getNewImage();
+      return;
+    }
+
+  }, [image, label, labelFilter]);
 
   const getNewImage = async () => {
-    const result = await iApi.getClassificationProblem();
+    const result = await iApi.getClassificationProblem({
+      user_id: user?.userId ?? '-1', 
+      label: labelFilter,
+      count: 1
+    });
     setImage(result?.prompt[0]?.url);
     setLabel(_.sample(result?.prompt[0]?.labels));
   };
@@ -42,6 +57,19 @@ const ClassifyImageModal = (props:{user: User, allLabels: Array<{label_id: strin
         alignItems:"space-between"
       }}
     >
+      <FormControl>
+          <InputLabel id="select-label">Label Filter</InputLabel>
+          <Select
+            labelId="simple-select-label"
+            id="simple-select"
+            value={labelFilter}
+            onChange={(event) => {
+              setLabelFilter((event.target.value as string))
+            }}
+          >
+            {allLabels === undefined ? null : allLabels.map((l) => {return <MenuItem value={l.label_id}>{l.name}</MenuItem>})}
+          </Select>
+        </FormControl>
       <h1 style={{ color: "black" }}>Does this image contain: {label.label_name}</h1>
       <div style={{ textAlign: "center" }}>
         <img

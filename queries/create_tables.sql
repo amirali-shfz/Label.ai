@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS Member
     username   text NOT NULL,
     password   text NOT NULL,
     trust      float NOT NULL,
-    name       text NOT NULL
+    name       text NOT NULL,
+    is_admin boolean NOT NULL
 );
 
 -- classification

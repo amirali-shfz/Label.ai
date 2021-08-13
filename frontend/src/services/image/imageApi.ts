@@ -1,23 +1,25 @@
+import { count } from 'console';
 import api from '../apiService';
 import {User} from '../user/userModel'
 
 const classificationApi = {
   
   // Core api (blue) 2.1
-  getClassificationProblem: async (): Promise<any> => {
+  getClassificationProblem: async (params:
+    {
+    user_id: string, 
+    label: string,
+    count: number
+  }): Promise<any> => {
     const res = await api.get('/images/prompt', {
-      params:
-      {
-        'count':1,
-        'user_id':1
-      }
+      params
     });
     return res.data;
   },
 
   // Core api (blue) 2.2
-  postClassificationSolution: async (is_true_label:boolean|null, label: any, user: Partial<User>) => {
-    const uid = user.userId || "1";
+  postClassificationSolution: async (is_true_label:boolean|null, label: any, user?: User) => {
+    const uid = user?.userId || "1";
     const correct_label = is_true_label == null ? 'idk' : is_true_label ? 't' : 'f';
 
     await api.post('/submissions/insert', {

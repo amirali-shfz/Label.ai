@@ -43,7 +43,7 @@ export default function ConfidenceTable({rows}) {
                 src={row.url} alt={`example of ${row.label_id}`}/>
               </TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{Math.round(row.total_votes)}</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{row.confidence}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{String(row.confidence).substring(0, Math.min(String(row.confidence).length, 6)) }</TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="middle">
                 <a href={row.url} rel="noreferrer"> link</a>
               </TableCell>
