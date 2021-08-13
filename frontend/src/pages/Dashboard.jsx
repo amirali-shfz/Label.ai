@@ -30,7 +30,7 @@ import TextField from '@material-ui/core/TextField';
 import NewConfidenceTable from './NewTable';
 import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
-// import FormDialog from "./Dialog";
+import FormDialog from "./Dialog";
 
 const Contributions = () => {
   return (
@@ -290,7 +290,7 @@ export default function Dashboard() {
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="All Classifications" />
+              <ListItemText primary="Confirmed Classifications" />
             </ListItem>
             <ListItem button onClick={() => {setTableName("mislabelled")}}>
               <ListItemIcon>
@@ -318,7 +318,7 @@ export default function Dashboard() {
             alignItems: "space-between"
           }}
         >
-          {/* <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> */}
+          { <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> }
           {pageName === "Dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
           <Contributions />
         </div>
