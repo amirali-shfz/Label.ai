@@ -37,7 +37,10 @@ export default function ConfidenceTable({rows}) {
           {rows.map((row) => (
             <TableRow key={row.img_id}>
               <TableCell component="th" scope="row">
-                <img style={{maxHeight:"400px", maxWidth:"400px"}} src={row.url} alt={`example of ${row.label_id}`}/>
+                <img 
+                onError={(e) => e.target.removeAttribute('src')} 
+                style={{maxHeight:"400px", maxWidth:"400px"}} 
+                src={row.url} alt={`example of ${row.label_id}`}/>
               </TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="right">{Math.round(row.total_votes)}</TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="right">{row.confidence}</TableCell>

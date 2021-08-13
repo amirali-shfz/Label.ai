@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -27,9 +28,9 @@ import Paper from '@material-ui/core/Paper';
 import ConfidenceTable from './Table';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-
-
+import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
+// import FormDialog from "./Dialog";
 
 const Contributions = () => {
   return (
@@ -41,7 +42,7 @@ const Contributions = () => {
   );
 }
 
-const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
+const ConfirmedPage = ({label, setLabel, allLabels, data}) => {
   console.log("confirmed modal label/data:", label, data)
   const [inputValue, setInputValue] = React.useState('');
 
@@ -55,7 +56,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
     alignItems:"space-between"
   }}
   >
-    {/* <FormControl >
+    <FormControl >
       <InputLabel id="select-label">Label</InputLabel>
       <Select
         labelId="simple-select-label"
@@ -63,14 +64,15 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
         value={label}
         onChange={(event) => {setLabel(event.target.value)}}
       >
-        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label}>{label.name}</MenuItem>})}
+        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
       </Select>
-    </FormControl> */}
+    </FormControl>
 
-    <Autocomplete
+    
+    { //Todo make this work
+    /* <Autocomplete
         value={label}
         onChange={(event, newValue) => {
-          // setValue(newValue);
           setLabel(newValue)
         }}
         inputValue={inputValue}
@@ -81,7 +83,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
         getOptionLabel={(option) => option.name}
         style={{ width: 400, marginBottom: 40 }}
         renderInput={(params) => <TextField {...params} label="Labels" variant="outlined" />}
-      />
+      /> */}
 
 
     <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
@@ -89,14 +91,17 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
 }
 
 const DEFAULT_COUNT = 10;
-const TablesModal = ({tableName: reportName}) => {
+const TablesPage = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
-  const [label, setLabel] = useState({});
+  const [labelId, setLabelId] = useState("");
   const [data, setData] = useState([])
 
   const getLabels = async () => {
+    console.log("get labels called!")
     const res = await iApi.getAllLabels()
-    setAllLabels(res);
+
+    // TODO: tmp way to improve performance
+    setAllLabels(res.slice(0, 20));
   };
 
   const getMislabelled = async () => {
@@ -127,20 +132,24 @@ const TablesModal = ({tableName: reportName}) => {
   },[allLabels, reportName]);
 
   useEffect(() => {
-    if (label === {} )
+    if (labelId === "")
       return;
-    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label.label_id); console.log("data from get confirmed image", label, res); setData(res)};
+    const populateData = async () => {
+      const res = await iApi.getConfirmedImagesByLabel(labelId); 
+      console.log("data from get confirmed image", labelId, res); setData(res)
+    };
     populateData()
-  },[label])
+  },[labelId])
 
   switch(reportName){
     case "labels":
       // the confirmed modal should display a table
       return (
-        <ConfirmedModal 
+        <ConfirmedPage
+       
           allLabels={allLabels}
-          label={label}
-          setLabel={setLabel}
+          label={labelId}
+          setLabel={setLabelId}
           data={data}
         />
       )
@@ -170,8 +179,26 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   
+  const [loginModalShow, setLoginModalShow] = useState(false);
+  const [user, setUser] = useState({});
+  const [allUsers, setAllUsers] = useState({}); 
+
+  const userLogin = (username, password) => {
+    
+    if(!(username in allUsers))
+      return false 
+    setUser({
+      username,
+      ...allUsers[username]
+    })
+    setLoginModalShow(false)
+    return true
+  }
+  useEffect(() => {
+    uApi.getUsersMap().then((val) => {setAllUsers(val)});
+  }, []);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -201,11 +228,30 @@ export default function Dashboard() {
           >
             {pageName}
           </Typography>
-          {/* <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
+          
+          {
+          user?.username ? 
+          <Typography
+          edge="end"
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            {"Hello " + user.username}
+            </Typography>
+           : 
+            <IconButton edge="end"
+              color="inherit"
+              aria-label="Login"
+              onClick={() => {setLoginModalShow(!loginModalShow)}}
+            >  
+            Login
+            </IconButton>
+          }
+            
+        
         </Toolbar>
       </AppBar>
       <Drawer
@@ -229,12 +275,15 @@ export default function Dashboard() {
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={() => {setPageName("Tables")}}>
+            {
+              !user?.admin? <ListItem button onClick={() => {setPageName("Tables")}}>
               <ListItemIcon>
                 <LayersIcon />
               </ListItemIcon>
               <ListItemText primary="Tables" />
-            </ListItem>
+            </ListItem> : null
+            }
+            
           </div>
         </List>
           <Divider />
@@ -274,7 +323,8 @@ export default function Dashboard() {
             alignItems: "space-between"
           }}
         >
-          {pageName === "dashboard" ? <ClassifyImageModal /> : <TablesModal tableName={tableName}/> }
+          {/* <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> */}
+          {pageName === "Dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
           <Contributions />
         </div>
       </main>

@@ -15,6 +15,7 @@ const returnPromise = (retVal: any) => {
 }
 const randomString = ():string => {return Math.random().toString().substring(16)}
 
+
 const testApi = {
     post: async (path:string, args: Object) => {
         switch (path){
@@ -25,7 +26,6 @@ const testApi = {
         }    
     },
     get: async (path:string) => {
-        const a = path.split
         const trimmed = path.split('?')[0];
         console.log("trimmed request path: ", trimmed)
         switch(trimmed) {
