@@ -1,6 +1,6 @@
-\copy label FROM './dataset_processing/csv/db_ready/label.csv' WITH (FORMAT csv, HEADER);
-\copy image FROM './dataset_processing/csv/db_ready/image.csv' WITH (FORMAT csv, HEADER);
-\copy classification(img_id, label_id, pre_classified) FROM './dataset_processing/csv/db_ready/classification.csv' WITH (FORMAT csv, HEADER);
+\copy label FROM './dataset_processing/test_dataset/label.csv' WITH (FORMAT csv, HEADER);
+\copy image FROM './dataset_processing/test_dataset/image.csv' WITH (FORMAT csv, HEADER);
+\copy classification(img_id, label_id, pre_classified) FROM './dataset_processing/test_dataset/classification.csv' WITH (FORMAT csv, HEADER);
 DELETE FROM label WHERE label_id not in (SELECT DISTINCT label_id FROM classification);
 
 

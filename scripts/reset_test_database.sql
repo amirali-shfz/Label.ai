@@ -3,4 +3,4 @@
 \i ./queries/create_tables.sql
 \i ./queries/create_indexes.sql
 \i ./queries/create_views.sql
-\i ./queries/populate_data_prod.sql
+\i ./queries/populate_data_test.sql

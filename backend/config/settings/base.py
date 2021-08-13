@@ -53,6 +53,12 @@ ROOT_URLCONF = "config.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+# CORS
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_ALLOW_ALL = True 
+CORS_ALLOW_CREDENTIALS = True
+
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
@@ -73,6 +79,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "reset_migrations",
     "rest_framework",
+    "corsheaders",
 ]
 LOCAL_APPS = [
     "label_ai.users.apps.UsersConfig",
@@ -82,6 +89,8 @@ LOCAL_APPS = [
     "label_ai.members.apps.MembersConfig",
     "label_ai.submissions.apps.SubmissionsConfig",
 ]
+
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -128,6 +137,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -138,6 +149,7 @@ MIDDLEWARE = [
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 # STATIC
 # ------------------------------------------------------------------------------

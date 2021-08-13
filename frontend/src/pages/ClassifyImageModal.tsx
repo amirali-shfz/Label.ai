@@ -1,4 +1,4 @@
-import cApi from "../services/classification/classificationApi";
+import iApi from "../services/image/imageApi";
 import uApi from "../services/user/userApi";
 import { useState, useEffect } from "react";
 import { User } from "../services/user/userModel";
@@ -11,21 +11,20 @@ const ClassifyImageModal = () => {
 
   useEffect(() => {
     uApi.getUser().then((val) => setUser(val));
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (image === "") getNewImage();
   }, [image]);
 
   const getNewImage = async () => {
-    const result = await cApi.getClassificationProblem();
-    console.log("new image:", result)
-    setImage(result?.url);
-    setLabel(_.sample(result?.labels));
+    const result = await iApi.getClassificationProblem();
+    setImage(result?.prompt[0]?.url);
+    setLabel(_.sample(result?.prompt[0]?.labels));
   };
 
-  const buttonClick = (isTrueLabel: boolean) => {
-    cApi.postClassificationSolution(
+  const buttonClick = (isTrueLabel: boolean|null) => {
+    iApi.postClassificationSolution(
       isTrueLabel,
       label,
       user
@@ -43,7 +42,7 @@ const ClassifyImageModal = () => {
         alignItems:"space-between"
       }}
     >
-      <h1 style={{ color: "black" }}>Is this: {label.label_name}</h1>
+      <h1 style={{ color: "black" }}>Does this image contain: {label.label_name}</h1>
       <div style={{ textAlign: "center" }}>
         <img
           src={image}
@@ -70,7 +69,7 @@ const ClassifyImageModal = () => {
         </button>
         <button
           onClick={() => {
-            getNewImage();
+            buttonClick(null);
           }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "grey" })}
         >

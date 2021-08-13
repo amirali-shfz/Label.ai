@@ -3,11 +3,12 @@ from django.http.response import JsonResponse
 from rest_framework import generics
 from rest_framework.views import APIView
 
-from label_ai import classifications, submissions
+from label_ai import submissions
 
 from .models import Submission
 from .serializers import SubmissionSerializer
 
+from json import loads
 
 class SubmissionList(generics.ListAPIView):
     queryset = Submission.objects.raw("SELECT * FROM Submission")
@@ -15,13 +16,16 @@ class SubmissionList(generics.ListAPIView):
 
 
 class SubmissionInsert(APIView):
-
     def post(self, request, format=None):
-        correct_label = request.POST.get('correct_label')
-        member_id = request.POST.get('member_id')
-        class_id = request.POST.get('class_id')
-        print(correct_label, member_id, class_id)
+        body = loads(request.body.decode('utf-8'))
+        correct_label = body['correct_label']
+        member_id = body['member_id']
+        class_id = body['class_id']
         cursor = connection.cursor()
+
+
+        if correct_label == 'idk':
+            correct_label = 'NULL'
 
         cursor.execute("""
             INSERT INTO submission(correct_label, member_id, class_id)

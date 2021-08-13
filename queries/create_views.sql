@@ -51,7 +51,7 @@ CREATE OR REPLACE VIEW Misclassification (
 ) AS
 SELECT *
 FROM ClassificationView
-WHERE confidence < 0.05;
+WHERE confidence < 0.08;
 
 
 -- All the classifications which we consider to be correct
@@ -77,4 +77,4 @@ CREATE OR REPLACE VIEW UnconfirmedClassification (
 ) AS
 SELECT *
 FROM ClassificationView
-WHERE confidence >= 0.05 OR confidence < 0.90;
+WHERE confidence >= 0.08 OR confidence < 0.90;

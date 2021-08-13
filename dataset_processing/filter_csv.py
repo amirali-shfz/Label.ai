@@ -3,18 +3,19 @@ import os
 import requests
 import random
 
-from requests.api import request
-
 MAX_NUM_IMAGES = 5000
+NUM_TEST_IMAGES = 100
 
+assert os.environ["PYTHONHASHSEED"] == "1"
 random.seed(1)
-os.makedirs('csv/filtered/', exist_ok=True)
+
+os.makedirs('./dataset_processing/csv/filtered/', exist_ok=True)
 
 # Get the labels we want to use
 print('Loading Data...')
-labels  = pd.read_csv('csv/downloads/labels.csv')
-images  = pd.read_csv('csv/downloads/images.csv')[['ImageID', 'OriginalURL', 'Thumbnail300KURL', 'Rotation']]
-classes = pd.read_csv('csv/downloads/classifications.csv')[['ImageID','LabelName','Confidence']]
+labels  = pd.read_csv('./dataset_processing/csv/downloads/labels.csv')
+images  = pd.read_csv('./dataset_processing/csv/downloads/images.csv')[['ImageID', 'OriginalURL', 'Thumbnail300KURL', 'Rotation']]
+classes = pd.read_csv('./dataset_processing/csv/downloads/classifications.csv')[['ImageID','LabelName','Confidence']]
 
 print('Renaming Columns...')
 images = images.rename(columns={'Thumbnail300KURL': 'SmallURL'})
@@ -34,8 +35,7 @@ classes = classes[classes['LabelName'].isin(label_ids)]
 
 print('Reducing the set of images...')
 # Set of images we want to use
-img_ids = set(classes['ImageID'].values)
-img_ids = set(random.sample(img_ids, MAX_NUM_IMAGES))
+img_ids = set(random.sample(set(classes['ImageID'].values), MAX_NUM_IMAGES))
 
 bad_img_ids = set()
 increment = len(img_ids)//100
@@ -51,18 +51,26 @@ for i, img_id in enumerate(img_ids):
         row.SmallURL = None
 
 img_ids = img_ids.difference(bad_img_ids)
+img_ids_test = set(list(img_ids)[:NUM_TEST_IMAGES])
 
 print(f'\t{len(img_ids)} of {MAX_NUM_IMAGES} remaining')
-
-# Remove Images that have no labels
-print('Removing Images from image and classification dataframes')
-images = images[images['ImageID'].isin(img_ids)]
-classes = classes[classes['ImageID'].isin(img_ids)]
 
 print('Setting default rotation to 0')
 images['Rotation'] = images['Rotation'].fillna(0).astype(int)
 
+# Remove Images that have no labels
+print('Removing Images from image and classification dataframes')
+images_prod = images[images['ImageID'].isin(img_ids)]
+images_test = images[images['ImageID'].isin(img_ids_test)]
+
+classes_prod = classes[classes['ImageID'].isin(img_ids)]
+classes_test = classes[classes['ImageID'].isin(img_ids_test)]
+
 print('Serializing files...')
-labels.to_csv('csv/filtered/labels.csv', index=False)
-images.to_csv('csv/filtered/images.csv', index=False)
-classes.to_csv('csv/filtered/classifications.csv', index=False)
+labels.to_csv('./dataset_processing/csv/filtered/labels.csv', index=False)
+
+images_prod.to_csv('./dataset_processing/csv/filtered/images_prod.csv', index=False)
+images_test.to_csv('./dataset_processing/csv/filtered/images_test.csv', index=False)
+
+classes_prod.to_csv('./dataset_processing/csv/filtered/classifications_prod.csv', index=False)
+classes_test.to_csv('./dataset_processing/csv/filtered/classifications_test.csv', index=False)
