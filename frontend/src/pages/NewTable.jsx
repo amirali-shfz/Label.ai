@@ -38,7 +38,7 @@ export default function NewConfidenceTable({rows}) {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.img_id}>
+            <TableRow key={row.img_id + row.label}>
               <TableCell align="center" component="th" scope="row">
                 <img 
                 onError={(e) => e.target.removeAttribute('src')} 
