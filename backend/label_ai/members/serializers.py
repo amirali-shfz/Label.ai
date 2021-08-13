@@ -11,5 +11,6 @@ class MemberSerializer(serializers.ModelSerializer):
             "username",
             "password",
             "trust",
-            "name"
+            "name",
+            "is_admin"
         )
