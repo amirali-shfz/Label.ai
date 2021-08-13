@@ -36,7 +36,7 @@ const Contributions = () => {
       }
     </Typography>
   );
-};
+}
 
 const LABEL_FILTERED_PAGES = {"all":true, "confirmed":true}
 
