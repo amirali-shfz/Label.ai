@@ -9,17 +9,20 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 
 const ClassifyImageModal = (props: {
-  user: User | undefined;
-  allLabels: Array<{ label_id: string; name: string }>;
-}) => {
-  const { user, allLabels } = props;
-  const [labelFilter, setLabelFilter] = useState("");
-  const [image, setImage] = useState("");
-  const [label, setLabel] = useState<{
+  user: User | undefined,
+  allLabels: Array<{ label_id: string; name: string }>,
+  image: string,
+  setImage: (arg0: string) => void,
+  label: {
     label_name: string;
     label_id: string;
     class_id: string;
-  }>({ label_name: "", label_id: "", class_id: "" });
+  },
+  setLabel: (arg0: string) => void
+}) => {
+  const { user, allLabels, image, setImage, label, setLabel } = props;
+  const [labelFilter, setLabelFilter] = useState("");
+
 
   useEffect(() => {
     if (image === "") {
@@ -32,7 +35,7 @@ const ClassifyImageModal = (props: {
         label.label_id,
         labelFilter
       );
-      //getNewImage();
+      // getNewImage();
       return;
     }
   }, [image, label, labelFilter]);
@@ -62,7 +65,7 @@ const ClassifyImageModal = (props: {
         alignItems: "space-between",
       }}
     >
-      <FormControl>
+      <FormControl variant="outlined" style={{marginBottom:"10px", width:"30%"}}>
         <InputLabel id="select-label">Label Filter</InputLabel>
         <Select
           labelId="simple-select-label"

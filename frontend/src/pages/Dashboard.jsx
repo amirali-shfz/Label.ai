@@ -124,6 +124,9 @@ export default function Dashboard() {
     });
   }, []);
 
+  // Prevent re-render of ClassifyImagePage by keeping state up here
+  const [image, setImage] = useState("");
+  const [label, setLabel] = useState({ label_name: "", label_id: "", class_id: "" });
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -167,14 +170,22 @@ export default function Dashboard() {
             </Typography>
           ) : (
             <IconButton
-              edge="end"
               color="inherit"
               aria-label="Login"
               onClick={() => {
                 setLoginModalShow(!loginModalShow);
               }}
             >
-              Login
+              <Typography
+                edge="end"
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                className={classes.title}
+              >
+                Login
+              </Typography>
             </IconButton>
           )}
         </Toolbar>
@@ -268,7 +279,7 @@ export default function Dashboard() {
             />
           }
           {pageName === "Dashboard" ? (
-            <ClassifyImageModal user={user} allLabels={allLabels} />
+            <ClassifyImageModal user={user} allLabels={allLabels} image={image} setImage={setImage} label={label} setLabel={setLabel}/>
           ) : (
             <TablesPage tableName={tableName} allLabels={allLabels} />
           )}
