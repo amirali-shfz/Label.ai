@@ -15,6 +15,7 @@ const returnPromise = (retVal: any) => {
 }
 const randomString = ():string => {return Math.random().toString().substring(16)}
 
+
 const testApi = {
     post: async (path:string, args: Object) => {
         switch (path){

@@ -1,7 +1,6 @@
 import iApi from "../services/image/imageApi";
 
 import { useState, useEffect } from "react";
-import { User } from "../services/user/userModel";
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
 

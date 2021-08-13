@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -36,7 +37,7 @@ const Contributions = () => {
   );
 }
 
-const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
+const ConfirmedPage = ({label, setLabel, allLabels, data}) => {
   console.log("confirmed modal label/data:", label, data)
   return (
   <div
@@ -56,22 +57,29 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
         value={label}
         onChange={(event) => {setLabel(event.target.value)}}
       >
-        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label}>{label.name}</MenuItem>})}
+        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
       </Select>
     </FormControl>
-    {data === undefined ? null : data.map(({url}) => {return <img style={{maxHeight:"500px", height:"auto", width:"auto"}} src={url} alt={`example of ${label}`}/>})}
+    
+    {data === undefined ? null : data.map(({url}) => {
+      return <img onError={(e) => e.target.removeAttribute('src')} 
+      style={{maxHeight:"500px", height:"auto", width:"auto", objectFit:"contain"}} 
+      src={url}/>})}
   </div>)
 }
 
 const DEFAULT_COUNT = 10;
-const TablesModal = ({tableName: reportName}) => {
+const TablesPage = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
-  const [label, setLabel] = useState({});
+  const [labelId, setLabelId] = useState("");
   const [data, setData] = useState([])
 
   const getLabels = async () => {
+    console.log("get labels called!")
     const res = await iApi.getAllLabels()
-    setAllLabels(res);
+
+    // TODO: tmp way to improve performance
+    setAllLabels(res.slice(0, 20));
   };
 
   const getMislabelled = async () => {
@@ -102,19 +110,23 @@ const TablesModal = ({tableName: reportName}) => {
   },[allLabels, reportName]);
 
   useEffect(() => {
-    if (label === {} )
+    if (labelId === "")
       return;
-    const populateData = async () => {const res = await iApi.getConfirmedImagesByLabel(label.label_id); console.log("data from get confirmed image", label, res); setData(res)};
+    const populateData = async () => {
+      const res = await iApi.getConfirmedImagesByLabel(labelId); 
+      console.log("data from get confirmed image", labelId, res); setData(res)
+    };
     populateData()
-  },[label])
+  },[labelId])
 
   switch(reportName){
     case "labels":
       return (
-        <ConfirmedModal 
+        <ConfirmedPage
+       
           allLabels={allLabels}
-          label={label}
-          setLabel={setLabel}
+          label={labelId}
+          setLabel={setLabelId}
           data={data}
         />
       )
