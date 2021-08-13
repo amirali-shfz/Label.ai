@@ -76,7 +76,7 @@ const TablesModal = ({tableName: reportName}) => {
   };
 
   const getMislabelled = async () => {
-    const mislabelled = await iApi.getMislabelledImages()
+    const mislabelled = await iApi.getMislabelledImages(DEFAULT_COUNT)
     setData(mislabelled);
   };
 
