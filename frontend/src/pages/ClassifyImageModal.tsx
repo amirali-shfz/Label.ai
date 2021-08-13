@@ -3,15 +3,16 @@ import iApi from "../services/image/imageApi";
 import { useState, useEffect } from "react";
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
+import { User } from "../services/user/userModel";
 
 
-const ClassifyImageModal = (props:any) => {
+const ClassifyImageModal = (props:{user: User, allLabels: Array<{label_id: string}>}) => {
 
-  const {user} = props;
+  const {user, allLabels} = props;
+  const [labelFilter, setLabelFilter] = useState("");
   const [image, setImage] = useState("");
   const [label, setLabel] = useState<{label_name:string, label_id:string, class_id:string}>({label_name:"", label_id:"",class_id:""});
 
-  
   useEffect(() => {
     if (image === "") getNewImage();
   }, [image]);
@@ -52,12 +53,12 @@ const ClassifyImageModal = (props:any) => {
       <div style={{ display: "flex" , justifyContent:"center", marginTop: "10px" }}>
         <Button
           onClick={() => { buttonClick(true)}}
-          style={Object.assign({}, buttonStyle, { backgroundColor: "red" })}
+          style={Object.assign({}, buttonStyle, { backgroundColor: "green" })}
         >
           Yes
         </Button>
         <Button
-          style={Object.assign({}, buttonStyle, { backgroundColor: "green" })}
+          style={Object.assign({}, buttonStyle, { backgroundColor: "red" })}
           onClick={() => { buttonClick(false);}}
         >
           No

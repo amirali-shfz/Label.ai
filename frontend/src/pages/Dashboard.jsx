@@ -7,10 +7,7 @@ import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -24,9 +21,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import ConfidenceTable from './Table';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
+
+import ConfirmedPage from "./ConfirmedReport";
 import NewConfidenceTable from './NewTable';
 import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
@@ -42,76 +38,21 @@ const Contributions = () => {
   );
 }
 
-const ConfirmedPage = ({label, setLabel, allLabels, data, reportName}) => {
-  console.log("confirmed modal label/data:", label, data)
-  const [inputValue, setInputValue] = React.useState('');
 
-  return (reportName === "labels" ?
-  <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center",
-    margin: "24px",
-    alignItems:"space-between"
-  }}
-  >
-      <FormControl>
-        <InputLabel id="select-label">Label</InputLabel>
-        <Select
-          labelId="simple-select-label"
-          id="simple-select"
-          value={label}
-          onChange={(event) => {setLabel(event.target.value)}}
-        >
-          {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
-        </Select>
-      </FormControl>
-      <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
-    { //Todo make this work
-    /* <Autocomplete
-        value={label}
-        onChange={(event, newValue) => {
-          setLabel(newValue)
-        }}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-        }}
-        options={allLabels === undefined ? [] : allLabels}
-        getOptionLabel={(option) => option.name}
-        style={{ width: 400, marginBottom: 40 }}
-        renderInput={(params) => <TextField {...params} label="Labels" variant="outlined" />}
-      /> */}
-  </div>: 
-  <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center",
-    margin: "24px",
-    alignItems:"space-between"
-  }}>
-     <NewConfidenceTable rows={data === undefined ? [] : data}></NewConfidenceTable>
-  </div>)
-}
 
 const DEFAULT_COUNT = 10;
-const TablesPage = ({tableName: reportName}) => {
-  const [allLabels, setAllLabels] = useState(undefined);
+const TablesPage = ({tableName, allLabels}) => {
+
   const [labelId, setLabelId] = useState("");
   const [data, setData] = useState([])
   const [underClassifiedData, setUnderClassfiedData] = useState([])
   const [misLabelledData, setMisLabelledData] = useState([])
 
-  const getLabels = async () => {
-    console.log("get labels called!")
-    const res = await iApi.getAllLabels()
-
-    // TODO: tmp way to improve performance
-    setAllLabels(res.slice(0, 20));
+  const getCorrectlyLabelled = async () => {
+    const res = await iApi.getConfirmedImagesByLabel(labelId); 
+    setData(res)
   };
-
+  
   const getMislabelled = async () => {
     const mislabelled = await iApi.getMislabelledImages(DEFAULT_COUNT)
     setData(mislabelled);
@@ -123,11 +64,9 @@ const TablesPage = ({tableName: reportName}) => {
   };
   useEffect(()  => {
     // api calls here based on which tablename is selected
-    switch(reportName){
+    switch(tableName){
       case "labels":
-        if(allLabels !== undefined)
-          break;
-        getLabels();
+        getCorrectlyLabelled();
         break;
       case "mislabelled":
         getMislabelled();
@@ -137,26 +76,32 @@ const TablesPage = ({tableName: reportName}) => {
         break;
       default:
     }
-  },[allLabels, reportName]);
-
-  useEffect(() => {
-    if (labelId === "")
-      return;
-    const populateData = async () => {
-      const res = await iApi.getConfirmedImagesByLabel(labelId); 
-      console.log("data from get confirmed image", labelId, res); setData(res)
-    };
-    populateData()
-  },[labelId])
+  },[tableName, labelId]);
 
     return (
-      <ConfirmedPage
+      <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
+        margin: "24px",
+        alignItems:"space-between"
+      }}
+      >
+        {
+          tableName === "labels" ?
+          <ConfirmedPage
         allLabels={allLabels}
         label={labelId}
         setLabel={setLabelId}
         data={data}
-        reportName={reportName}
-      />
+        reportName={tableName}
+      />:
+          <NewConfidenceTable rows={data === undefined ? [] : data}></NewConfidenceTable>
+
+        }
+      
+      </div>
     )
 }
 
@@ -180,6 +125,16 @@ export default function Dashboard() {
   const [loginModalShow, setLoginModalShow] = useState(false);
   const [user, setUser] = useState({});
   const [allUsers, setAllUsers] = useState({}); 
+
+  const [allLabels, setAllLabels] = useState(undefined);
+
+
+  useEffect(() => {
+    iApi.getAllLabels().then((res) => {
+      // TODO: tmp way to improve performance
+      setAllLabels(res.slice(0, 20));
+    })
+  }, []);
 
   const userLogin = (username, password) => {
     
@@ -319,7 +274,9 @@ export default function Dashboard() {
           }}
         >
           { <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> }
-          {pageName === "Dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
+          {pageName === "Dashboard" ? 
+          <ClassifyImageModal user={user} allLabels={allLabels}/> : 
+          <TablesPage tableName={tableName} allLabels={allLabels}/> }
           <Contributions />
         </div>
       </main>
