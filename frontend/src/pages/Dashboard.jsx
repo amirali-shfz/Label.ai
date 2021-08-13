@@ -36,7 +36,7 @@ const Contributions = () => {
       }
     </Typography>
   );
-};
+}
 
 const DEFAULT_COUNT = 10;
 const TablesPage = ({ tableName, allLabels }) => {
