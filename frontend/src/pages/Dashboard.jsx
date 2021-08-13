@@ -24,10 +24,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import Paper from '@material-ui/core/Paper';
 import ConfidenceTable from './Table';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
 // import FormDialog from "./Dialog";
@@ -156,7 +153,11 @@ const TablesPage = ({tableName: reportName}) => {
     case "mislabelled":
       
     case "underclassified":
-      return (data === undefined? null : data.map((item) => <p>{JSON.stringify(item)}</p> ))
+      return (data === undefined? null : data.map((item) => <div>
+        <h4>{item.label}</h4>
+        <img width='300' src={item.url}/>
+        <p>{JSON.stringify(item)}</p>
+      </div> ))
     default:
       return null;
   }
@@ -295,19 +296,19 @@ export default function Dashboard() {
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="All image labels" />
+              <ListItemText primary="All Classifications" />
             </ListItem>
             <ListItem button onClick={() => {setTableName("mislabelled")}}>
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Mislabelled Images" />
+              <ListItemText primary="Misclassified" />
             </ListItem>
             <ListItem button onClick={() => {setTableName("underclassified")}}>
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Low classifications" />
+              <ListItemText primary="New Classifications" />
             </ListItem>
           </div>
         </List> : null }
