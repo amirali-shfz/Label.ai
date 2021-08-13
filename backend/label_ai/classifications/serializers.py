@@ -10,5 +10,6 @@ class ClassificationSerializer(serializers.ModelSerializer):
             "img_id",
             "label_id",
             "pre_classified",
+            "total_votes",
             "confidence"
         )
