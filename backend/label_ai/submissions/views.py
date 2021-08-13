@@ -1,3 +1,5 @@
+from json import loads
+
 from django.db import connection
 from django.http.response import JsonResponse
 from rest_framework import generics
@@ -8,7 +10,6 @@ from label_ai import submissions
 from .models import Submission
 from .serializers import SubmissionSerializer
 
-from json import loads
 
 class SubmissionList(generics.ListAPIView):
     queryset = Submission.objects.raw("SELECT * FROM Submission")
@@ -28,7 +29,7 @@ class SubmissionInsert(APIView):
         #     print(f'{class_id},{correct_label}', file=f)
 
         if correct_label == 'idk':
-            correct_label = 'NULL'
+            correct_label = None
 
         cursor.execute("""
             INSERT INTO submission(correct_label, member_id, class_id)
