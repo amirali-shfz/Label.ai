@@ -1,12 +1,12 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles({
   table: {
@@ -14,12 +14,11 @@ const useStyles = makeStyles({
   },
 });
 
-
 const tableTextStyle = {
   //fontSize:"40px" // TODO: make text look nice
 };
 
-export default function ConfidenceTable({rows}) {
+export default function ConfidenceTable({ rows }) {
   const classes = useStyles();
 
   return (
@@ -37,15 +36,36 @@ export default function ConfidenceTable({rows}) {
           {rows.map((row) => (
             <TableRow key={row.img_id}>
               <TableCell align="middle" component="th" scope="row">
-                <img 
-                onError={(e) => e.target.removeAttribute('src')} 
-                style={{maxHeight:"400px", maxWidth:"400px"}} 
-                src={row.url} alt={`example of ${row.label_id}`}/>
+                <img
+                  onError={(e) => e.target.removeAttribute("src")}
+                  style={{ maxHeight: "400px", maxWidth: "400px" }}
+                  src={row.url}
+                  alt={`example of ${row.label_id}`}
+                />
               </TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{Math.round(row.total_votes)}</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{String(row.confidence).substring(0, Math.min(String(row.confidence).length, 6)) }</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">
-                <a href={row.url} rel="noreferrer"> link</a>
+              <TableCell
+                style={Object.assign(tableTextStyle, {})}
+                align="middle"
+              >
+                {Math.round(row.total_votes)}
+              </TableCell>
+              <TableCell
+                style={Object.assign(tableTextStyle, {})}
+                align="middle"
+              >
+                {String(row.confidence).substring(
+                  0,
+                  Math.min(String(row.confidence).length, 6)
+                )}
+              </TableCell>
+              <TableCell
+                style={Object.assign(tableTextStyle, {})}
+                align="middle"
+              >
+                <a href={row.url} rel="noreferrer">
+                  {" "}
+                  link
+                </a>
               </TableCell>
             </TableRow>
           ))}
@@ -54,5 +74,3 @@ export default function ConfidenceTable({rows}) {
     </TableContainer>
   );
 }
-
-
