@@ -23,10 +23,9 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import Paper from '@material-ui/core/Paper';
-
+import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
-
+import FormDialog from "./Dialog";
 const Contributions = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -144,8 +143,26 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   
+  const [loginModalShow, setLoginModalShow] = useState(false);
+  const [user, setUser] = useState({});
+  const [allUsers, setAllUsers] = useState({}); 
+
+  const userLogin = (username, password) => {
+    
+    if(!(username in allUsers))
+      return false 
+    setUser({
+      username,
+      ...allUsers[username]
+    })
+    setLoginModalShow(false)
+    return true
+  }
+  useEffect(() => {
+    uApi.getUsersMap().then((val) => {setAllUsers(val)});
+  }, []);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -175,11 +192,30 @@ export default function Dashboard() {
           >
             Dashboard
           </Typography>
-          {/* <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
+          
+          {
+          user?.username ? 
+          <Typography
+          edge="end"
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            {"Hello " + user.username}
+            </Typography>
+           : 
+            <IconButton edge="end"
+              color="inherit"
+              aria-label="Login"
+              onClick={() => {setLoginModalShow(!loginModalShow)}}
+            >  
+            Login
+            </IconButton>
+          }
+            
+        
         </Toolbar>
       </AppBar>
       <Drawer
@@ -203,12 +239,15 @@ export default function Dashboard() {
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={() => {setPageName("tables")}}>
+            {
+              !user?.admin? <ListItem button onClick={() => {setPageName("tables")}}>
               <ListItemIcon>
                 <LayersIcon />
               </ListItemIcon>
               <ListItemText primary="Tables" />
-            </ListItem>
+            </ListItem> : null
+            }
+            
           </div>
         </List>
           <Divider />
@@ -248,7 +287,8 @@ export default function Dashboard() {
             alignItems: "space-between"
           }}
         >
-          {pageName === "dashboard" ? <ClassifyImageModal /> : <TablesModal tableName={tableName}/> }
+          <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/>
+          {pageName === "dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
           <Contributions />
         </div>
       </main>

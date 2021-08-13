@@ -1,18 +1,17 @@
 import iApi from "../services/image/imageApi";
-import uApi from "../services/user/userApi";
+
 import { useState, useEffect } from "react";
 import { User } from "../services/user/userModel";
 import _ from 'lodash';
 
-const ClassifyImageModal = () => {
-  const [user, setUser] = useState<User | {}>({});
+
+const ClassifyImageModal = (props:any) => {
+
+  const {user} = props;
   const [image, setImage] = useState("");
   const [label, setLabel] = useState<{label_name:string, label_id:string, class_id:string}>({label_name:"", label_id:"",class_id:""});
 
-  useEffect(() => {
-    uApi.getUser().then((val) => setUser(val));
-  }, []);
-
+  
   useEffect(() => {
     if (image === "") getNewImage();
   }, [image]);
@@ -84,7 +83,7 @@ const buttonStyle = {
   height: "100%",
   width: "30%",
   cursor: "pointer",
-  "text-transform": "uppercase",
+  textTransform: "uppercase" as "uppercase",
   color: "white",
   padding: "5px 15px",
   borderRadius: "5px",
