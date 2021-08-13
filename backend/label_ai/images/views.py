@@ -180,14 +180,24 @@ class ImageClassificationPrompt(APIView):
     def get(self, request, format=None):
         from django.db import connection
         count = int(request.GET.get("count")) if request.GET.get("count") else 100
+        label_id = str(request.GET.get("label_id")) if request.GET.get("label_id") else ""
+        print(label_id)
         user_id = int(request.GET.get("user_id"))
 
         cursor = connection.cursor()
         query = 'SELECT original_url, img_id, class_id, label_id, name\
-                 FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
-                 as a WHERE NOT EXISTS (SELECT * FROM Submission\
-                 WHERE member_id = %s AND class_id = a.class_id) ORDER BY RANDOM() LIMIT %s;'
-        cursor.execute(query,(user_id, count))
+                FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
+                as a WHERE NOT EXISTS (SELECT * FROM Submission\
+                WHERE member_id = %s AND class_id = a.class_id)'
+
+        if label_id!="": query += 'AND a.label_id=%s'
+
+        query+='ORDER BY RANDOM() LIMIT %s;'
+
+        if label_id == "":    
+            cursor.execute(query,(user_id, count))
+        else:
+            cursor.execute(query,(user_id, label_id, count))
 
         image_classification_prompt = cursor.fetchall()
         images = {}

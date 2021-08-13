@@ -172,14 +172,22 @@ export default function Dashboard() {
             </Typography>
           ) : (
             <IconButton
-              edge="end"
               color="inherit"
               aria-label="Login"
               onClick={() => {
                 setLoginModalShow(!loginModalShow);
               }}
             >
-              Login
+              <Typography
+                edge="end"
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                className={classes.title}
+              >
+                Login
+              </Typography>
             </IconButton>
           )}
         </Toolbar>

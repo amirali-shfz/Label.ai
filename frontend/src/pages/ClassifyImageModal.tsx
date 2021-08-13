@@ -66,7 +66,7 @@ const ClassifyImageModal = (props: {
         alignItems: "space-between",
       }}
     >
-      <FormControl>
+      <FormControl variant="outlined" style={{marginBottom:"10px", width:"30%"}}>
         <InputLabel id="select-label">Label Filter</InputLabel>
         <Select
           labelId="simple-select-label"
