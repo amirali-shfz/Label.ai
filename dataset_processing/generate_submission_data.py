@@ -31,23 +31,11 @@ users = pd.DataFrame(
 
 users.to_csv('./dataset_processing/prod_dataset/member.csv')
 
-true_classifications = [
-    # Apples
-    10539, 9227, 1122,
-    # Birds
-    180, 570, 4090, 6692, 7162, 9147, 11278, 13058, 13231, 179, 426, 481, 653, 980, 1065, 1164, 1393, 1435, 1800, 2378, 2572,
-    # Non popular
-    11, 27, 65, 70, 72, 73, 75, 79, 110, 111, 127, 147, 161, 171, 177, 208, 211, 234, 242, 243, 299, 343, 370, 401, 407, 410, 428, 440, 458, 460, 463, 467, 471, 475, 484, 497, 504, 551, 573, 591, 596, 598, 599, 612, 631, 638, 639, 661, 663, 685, 695, 699, 710, 739, 761, 762, 770, 773, 793, 794, 942, 990, 991, 994,1014,1024,1028,1038,1060,1072,1074,1122,1126,1131,1135,1136,1168,1171,1178,1208,1215,1218,1243,1267,1269,1284,
-    13197, 13217, 13227, 13230, 13232, 13237, 13276, 13290, 13291, 13294, 13297, 13298, 13308, 13326, 13336, 13341, 13351, 13352, 13353, 13356, 13372, 13373, 13385
+subs = pd.read_csv('./dataset_processing/csv/submissions.csv')
 
-]
-false_classifications = [
-    # Apples
-    10131, 208,
-    # Non popular
-    74, 78, 112, 163, 330, 365, 406, 434, 474, 632, 641, 677, 712, 714, 723, 850, 924, 981, 982, 999, 1130, 1214, 1260, 1295,
-    13342, 13328, 13325, 13301, 13236, 13228, 13220, 13211, 13210, 13187
-]
+true_classifications = list(subs[subs['response'] == 't'].id) 
+false_classifications = list(subs[subs['response'] == 'f'].id) 
+controversial_classifications = list(subs[subs['response'] == 'idk'].id) 
 
 # select class_id, name, original_url from classification natural join image natural join label where name in (select label from imglabel group by label having COUNT(*) < 10) and class_id < 1295 order by class_id desc;
 submissions = [
@@ -67,6 +55,12 @@ for class_id in false_classifications:
     for user_id in random.sample(USER_ID_RANGE, random.randrange(MIN_SUBS, MAX_SUBS)):
         rank = 1.6*math.sqrt(random.uniform(MIN_TRUST, MAX_TRUST)) >= trusts[user_id-1]
         submissions.append((class_id, user_id, rank))
+
+for class_id in controversial_classifications:
+    for user_id in random.sample(USER_ID_RANGE, random.randrange(MIN_SUBS, MAX_SUBS)):
+        rank = random.choice([True, False])
+        submissions.append((class_id, user_id, rank))
+
 
 print(submissions)
 

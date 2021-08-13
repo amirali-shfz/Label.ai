@@ -23,6 +23,9 @@ class SubmissionInsert(APIView):
         class_id = body['class_id']
         cursor = connection.cursor()
 
+        ## This is for generating fake user submissions
+        # with open('../dataset_processing/csv/submissions.csv', 'a') as f:
+        #     print(f'{class_id},{correct_label}', file=f)
 
         if correct_label == 'idk':
             correct_label = 'NULL'
