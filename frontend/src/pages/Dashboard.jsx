@@ -147,6 +147,9 @@ export default function Dashboard() {
     });
   }, []);
 
+  // Prevent re-render of ClassifyImagePage by keeping state up here
+  const [image, setImage] = useState("");
+  const [label, setLabel] = useState({ label_name: "", label_id: "", class_id: "" });
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -304,7 +307,7 @@ export default function Dashboard() {
             />
           }
           {pageName === "Dashboard" ? (
-            <ClassifyImageModal user={user} allLabels={allLabels} />
+            <ClassifyImageModal user={user} allLabels={allLabels} image={image} setImage={setImage} label={label} setLabel={setLabel}/>
           ) : (
             <TablesPage tableName={tableName} allLabels={allLabels} />
           )}
