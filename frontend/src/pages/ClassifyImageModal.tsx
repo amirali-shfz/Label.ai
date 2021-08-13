@@ -51,26 +51,20 @@ const ClassifyImageModal = (props:any) => {
       </div>
       <div style={{ display: "flex" , justifyContent:"center", marginTop: "10px" }}>
         <Button
-          onClick={() => {
-            buttonClick(true);
-          }}
-          style={Object.assign({}, buttonStyle, { backgroundColor: "green" })}
+          onClick={() => { buttonClick(true)}}
+          style={Object.assign({}, buttonStyle, { backgroundColor: "red" })}
         >
           Yes
         </Button>
         <Button
-          onClick={() => {
-            buttonClick(false);
-          }}
-          style={Object.assign({}, buttonStyle, { backgroundColor: "red" })}
+          style={Object.assign({}, buttonStyle, { backgroundColor: "green" })}
+          onClick={() => { buttonClick(false);}}
         >
           No
         </Button>
         <Button
-          onClick={() => {
-            buttonClick(null);
-          }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "grey" })}
+          onClick={() => { buttonClick(null);}}
         >
           Unsure
         </Button>
@@ -83,7 +77,6 @@ const buttonStyle = {
   height: "100%",
   width: "10%",
   cursor: "pointer",
-  textTransform: "uppercase" as "uppercase",
   color: "white",
   padding: "5px 15px",
   borderRadius: "5px",

@@ -21,12 +21,14 @@ class ImageListView(generics.ListAPIView):
 
 class ImagesByLabelView(APIView):
 
-    # GET /images/?label_id=""
+    # GET /image/confirmed/?label_id=""
     # Resp:
     # {
     #   images: Array<{
     #       url: string,
     #       image_id: string,
+    #       total_votes: int,
+    #       confidence: float,
     #   }>
     # }
     def get(set, request, format=None):
@@ -34,9 +36,9 @@ class ImagesByLabelView(APIView):
         
         if not request.GET.get("label_id"): raise Http404() 
         label_id = request.GET.get("label_id")
-        row_ordering = ["url", "img_id" ]
+        row_ordering = ["url", "img_id", "total_votes", "confidence"]
         
-        sql_statement = "SELECT i.original_url, i.img_id FROM classificationview as c, image as i, label as l \
+        sql_statement = "SELECT i.original_url, i.img_id, c.total_votes, c.confidence FROM classificationview as c, image as i, label as l \
             WHERE i.img_id = c.img_id AND c.label_id = l.label_id \
                 AND c.pre_classified = True \
                 AND l.label_id = %s \
@@ -51,6 +53,7 @@ class ImagesByLabelView(APIView):
         for image in label_related_imgs:
             img_obj = {}
             for i, val in enumerate(image):
+                
                 img_obj[row_ordering[i]] = val
             parsed_images.append(img_obj)
 
@@ -58,7 +61,7 @@ class ImagesByLabelView(APIView):
 
 class MisLabelledImagesView(APIView):
 
-    # GET /images/mislabelled/?count=num
+    # GET /image/mislabelled/?count=num
     # {
     #     images: Array<{
     #         url:string
