@@ -21,7 +21,7 @@ class ImageListView(generics.ListAPIView):
 
 class ImagesByLabelView(APIView):
 
-    # GET /image/?label_id=""
+    # GET /images/?label_id=""
     # Resp:
     # {
     #   images: Array<{
@@ -58,7 +58,7 @@ class ImagesByLabelView(APIView):
 
 class MisLabelledImagesView(APIView):
 
-    # GET /image/mislabelled/?count=num
+    # GET /images/mislabelled/?count=num
     # {
     #     images: Array<{
     #         url:string
