@@ -7,10 +7,7 @@ import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -24,10 +21,9 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import ConfidenceTable from './Table';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import NewConfidenceTable from './NewTable';
+
+import ConfirmedPage from "./ConfirmedReport";
+import NewConfidenceTable from "./NewTable";
 import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
 import FormDialog from "./Dialog";
@@ -42,97 +38,32 @@ const Contributions = () => {
   );
 }
 
-const ConfirmedPage = ({label, setLabel, allLabels, data, reportName}) => {
-  console.log("confirmed modal label/data:", label, data)
-  const [inputValue, setInputValue] = React.useState('');
-
-  return (reportName === "labels" ?
-  <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center",
-    margin: "24px",
-    alignItems:"space-between"
-  }}
-  >
-      <FormControl variant="outlined">
-        <InputLabel id="select-label" >Label</InputLabel>
-        <Select
-          labelId="simple-select-label"
-          id="simple-select"
-          value={label}
-          label="Label"
-          onChange={(event) => {setLabel(event.target.value)}}
-          style={{marginBottom:"10px", width:"30%"}}
-        >
-          {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
-        </Select>
-      </FormControl>
-      <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
-    { //Todo make this work
-    /* <Autocomplete
-        value={label}
-        onChange={(event, newValue) => {
-          setLabel(newValue)
-        }}
-        inputValue={inputValue}
-        onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
-        }}
-        options={allLabels === undefined ? [] : allLabels}
-        getOptionLabel={(option) => option.name}
-        style={{ width: 400, marginBottom: 40 }}
-        renderInput={(params) => <TextField {...params} label="Labels" variant="outlined" />}
-      /> */}
-  </div>: 
-  <div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center",
-    margin: "24px",
-    alignItems:"space-between"
-  }}>
-     <NewConfidenceTable rows={data === undefined ? [] : data}></NewConfidenceTable>
-  </div>)
-}
-
-
 const DEFAULT_COUNT = 10;
-const TablesPage = ({tableName: reportName}) => {
-  const [allLabels, setAllLabels] = useState(undefined);
+const TablesPage = ({ tableName, allLabels }) => {
   const [labelId, setLabelId] = useState("");
-  const [data, setData] = useState([])
-  const [underClassifiedData, setUnderClassfiedData] = useState([])
-  const [misLabelledData, setMisLabelledData] = useState([])
+  const [data, setData] = useState([]);
+  const [underClassifiedData, setUnderClassfiedData] = useState([]);
+  const [misLabelledData, setMisLabelledData] = useState([]);
 
-  const getLabels = async () => {
-    console.log("get labels called!")
-    const res = await iApi.getAllLabels()
-
-    // TODO: tmp way to improve performance
-    // setAllLabels(res.slice(0, 20));
-    setAllLabels(res.sort((a, b) => a.name < b.name ? -1 : 1 ));
-    console.log("labels", res)
+  const getCorrectlyLabelled = async () => {
+    const res = await iApi.getConfirmedImagesByLabel(labelId);
+    setData(res);
   };
 
   const getMislabelled = async () => {
-    const mislabelled = await iApi.getMislabelledImages(DEFAULT_COUNT)
+    const mislabelled = await iApi.getMislabelledImages(DEFAULT_COUNT);
     setData(mislabelled);
   };
 
-  const getUnderclassified  = async () => {
+  const getUnderclassified = async () => {
     const underclassified = await iApi.getUnderclassifiedImages(DEFAULT_COUNT);
     setData(underclassified);
   };
-  useEffect(()  => {
+  useEffect(() => {
     // api calls here based on which tablename is selected
-    switch(reportName){
+    switch (tableName) {
       case "labels":
-        if(allLabels !== undefined)
-          break;
-        getLabels();
+        getCorrectlyLabelled();
         break;
       case "mislabelled":
         getMislabelled();
@@ -142,35 +73,41 @@ const TablesPage = ({tableName: reportName}) => {
         break;
       default:
     }
-  },[allLabels, reportName]);
+  }, [tableName, labelId]);
 
-  useEffect(() => {
-    if (labelId === "")
-      return;
-    const populateData = async () => {
-      const res = await iApi.getConfirmedImagesByLabel(labelId); 
-      console.log("data from get confirmed image", labelId, res); setData(res)
-    };
-    populateData()
-  },[labelId])
-
-    return (
-      <ConfirmedPage
-        allLabels={allLabels}
-        label={labelId}
-        setLabel={setLabelId}
-        data={data}
-        reportName={reportName}
-      />
-    )
-}
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
+        margin: "24px",
+        alignItems: "space-between",
+      }}
+    >
+      {tableName === "labels" ? (
+        <ConfirmedPage
+          allLabels={allLabels}
+          label={labelId}
+          setLabel={setLabelId}
+          data={data}
+          reportName={tableName}
+        />
+      ) : (
+        <NewConfidenceTable
+          rows={data === undefined ? [] : data}
+        ></NewConfidenceTable>
+      )}
+    </div>
+  );
+};
 
 const drawerWidth = 240;
 
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  
+
   const [pageName, setPageName] = useState("Dashboard"); // dashboard, tables
 
   const [tableName, setTableName] = useState("labels"); // labels, mislabelled, underclassified
@@ -181,24 +118,33 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  
+
   const [loginModalShow, setLoginModalShow] = useState(false);
   const [user, setUser] = useState({});
-  const [allUsers, setAllUsers] = useState({}); 
+  const [allUsers, setAllUsers] = useState({});
+
+  const [allLabels, setAllLabels] = useState(undefined);
+
+  useEffect(() => {
+    iApi.getAllLabels().then((res) => {
+      // TODO: allLabels performance slow
+      setAllLabels(res.sort((a, b) => (a.name < b.name ? -1 : 1)));
+    });
+  }, []);
 
   const userLogin = (username, password) => {
-    
-    if(!(username in allUsers))
-      return false 
+    if (!(username in allUsers)) return false;
     setUser({
       username,
-      ...allUsers[username]
-    })
-    setLoginModalShow(false)
-    return true
-  }
+      ...allUsers[username],
+    });
+    setLoginModalShow(false);
+    return true;
+  };
   useEffect(() => {
-    uApi.getUsersMap().then((val) => {setAllUsers(val)});
+    uApi.getUsersMap().then((val) => {
+      setAllUsers(val);
+    });
   }, []);
 
   return (
@@ -230,28 +176,30 @@ export default function Dashboard() {
           >
             {pageName}
           </Typography>
-          
-          {
-          user?.username ? 
-          <Typography
-          edge="end"
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            {"Hello " + user.username}
+
+          {user?.username ? (
+            <Typography
+              edge="end"
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
+              {"Hello " + user.username}
             </Typography>
-           : 
-            <IconButton edge="end"
+          ) : (
+            <IconButton
+              edge="end"
               color="inherit"
               aria-label="Login"
-              onClick={() => {setLoginModalShow(!loginModalShow)}}
-            >  
-            Login
+              onClick={() => {
+                setLoginModalShow(!loginModalShow);
+              }}
+            >
+              Login
             </IconButton>
-          }
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -269,48 +217,73 @@ export default function Dashboard() {
         <Divider />
         <List>
           <div>
-            <ListItem button onClick={() => {setPageName("Dashboard")}}>
+            <ListItem
+              button
+              onClick={() => {
+                setPageName("Dashboard");
+              }}
+            >
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            {
-              !user?.admin? <ListItem button onClick={() => {setPageName("Tables")}}>
-              <ListItemIcon>
-                <LayersIcon />
-              </ListItemIcon>
-              <ListItemText primary="Tables" />
-            </ListItem> : null
-            }
-            
+            {!user?.admin ? (
+              <ListItem
+                button
+                onClick={() => {
+                  setPageName("Tables");
+                }}
+              >
+                <ListItemIcon>
+                  <LayersIcon />
+                </ListItemIcon>
+                <ListItemText primary="Tables" />
+              </ListItem>
+            ) : null}
           </div>
         </List>
-          <Divider />
-        { pageName === "Tables" ? 
-        <List>
-          <div>
-            <ListSubheader inset>Categories</ListSubheader>
-            <ListItem button onClick={() => {setTableName("labels")}}>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Confirmed" />
-            </ListItem>
-            <ListItem button onClick={() => {setTableName("mislabelled")}}>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Misclassified" />
-            </ListItem>
-            <ListItem button onClick={() => {setTableName("underclassified")}}>
-              <ListItemIcon>
-                <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="New" />
-            </ListItem>
-          </div>
-        </List> : null }
+        <Divider />
+        {pageName === "Tables" ? (
+          <List>
+            <div>
+              <ListSubheader inset>Categories</ListSubheader>
+              <ListItem
+                button
+                onClick={() => {
+                  setTableName("labels");
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Confirmed" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => {
+                  setTableName("mislabelled");
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Misclassified" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => {
+                  setTableName("underclassified");
+                }}
+              >
+                <ListItemIcon>
+                  <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="New" />
+              </ListItem>
+            </div>
+          </List>
+        ) : null}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -320,11 +293,21 @@ export default function Dashboard() {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "space-between"
+            alignItems: "space-between",
           }}
         >
-          { <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> }
-          {pageName === "Dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
+          {
+            <FormDialog
+              login={userLogin}
+              setOpenState={setLoginModalShow}
+              isOpen={loginModalShow}
+            />
+          }
+          {pageName === "Dashboard" ? (
+            <ClassifyImageModal user={user} allLabels={allLabels} />
+          ) : (
+            <TablesPage tableName={tableName} allLabels={allLabels} />
+          )}
           <Contributions />
         </div>
       </main>

@@ -17,14 +17,9 @@ const useStyles = makeStyles({
   },
 });
 
-
 const tableTextStyle = {
   fontSize:"18px" // TODO: make text look nice
 };
-
-const tableTitleStyle = {
-    fontSize:"18px" // TODO: make text look nice
-}
 
 export default function NewConfidenceTable({rows}) {
   const classes = useStyles();
@@ -67,5 +62,3 @@ export default function NewConfidenceTable({rows}) {
     </TableContainer>
   );
 }
-
-

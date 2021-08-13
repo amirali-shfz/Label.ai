@@ -17,12 +17,11 @@ const useStyles = makeStyles({
   },
 });
 
-
 const tableTextStyle = {
   fontSize:"17px"
 };
 
-export default function ConfidenceTable({rows}) {
+export default function ConfidenceTable({ rows }) {
   const classes = useStyles();
 
   return (
@@ -50,7 +49,6 @@ export default function ConfidenceTable({rows}) {
               <TableCell style={Object.assign(tableTextStyle, {})} align="center">
 
                 <ConfidencePieChart row={row}></ConfidencePieChart>
-                {/* {String(row.confidence).substring(0, Math.min(String(row.confidence).length, 6)) } */}
                 </TableCell>
               <TableCell style={Object.assign(tableTextStyle, {})} align="center">
                 <Button href={row.url} color="primary">
@@ -64,5 +62,3 @@ export default function ConfidenceTable({rows}) {
     </TableContainer>
   );
 }
-
-

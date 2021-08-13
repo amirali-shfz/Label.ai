@@ -6,6 +6,7 @@ class Member(models.Model):
     password = models.TextField()
     trust = models.FloatField()
     name = models.TextField()
+    is_admin = models.BooleanField()
 
     class Meta:
         db_table = 'member'
