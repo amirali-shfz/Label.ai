@@ -96,6 +96,7 @@ const ConfirmedPage = ({label, setLabel, allLabels, data, reportName}) => {
   </div>)
 }
 
+
 const DEFAULT_COUNT = 10;
 const TablesPage = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
@@ -109,7 +110,9 @@ const TablesPage = ({tableName: reportName}) => {
     const res = await iApi.getAllLabels()
 
     // TODO: tmp way to improve performance
-    setAllLabels(res.slice(0, 20));
+    // setAllLabels(res.slice(0, 20));
+    setAllLabels(res.sort((a, b) => a.name < b.name ? -1 : 1 ));
+    console.log("labels", res)
   };
 
   const getMislabelled = async () => {
@@ -285,12 +288,12 @@ export default function Dashboard() {
         { pageName === "Tables" ? 
         <List>
           <div>
-            <ListSubheader inset>Saved reports</ListSubheader>
+            <ListSubheader inset>Categories</ListSubheader>
             <ListItem button onClick={() => {setTableName("labels")}}>
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="All Classifications" />
+              <ListItemText primary="Confirmed" />
             </ListItem>
             <ListItem button onClick={() => {setTableName("mislabelled")}}>
               <ListItemIcon>
@@ -302,7 +305,7 @@ export default function Dashboard() {
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="New Classifications" />
+              <ListItemText primary="New" />
             </ListItem>
           </div>
         </List> : null }
