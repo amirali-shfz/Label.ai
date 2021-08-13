@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Classification
 CREATE TABLE IF NOT EXISTS Submission
 (
     submission_id  SERIAL PRIMARY KEY,
-    correct_label  boolean NOT NULL,
+    correct_label  boolean,
     member_id      integer NOT NULL,
     class_id       integer NOT NULL,
     CONSTRAINT fk_member FOREIGN KEY ( member_id ) REFERENCES Member ( member_id ),

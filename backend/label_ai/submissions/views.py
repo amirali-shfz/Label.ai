@@ -23,6 +23,10 @@ class SubmissionInsert(APIView):
         class_id = body['class_id']
         cursor = connection.cursor()
 
+
+        if correct_label == 'idk':
+            correct_label = 'NULL'
+
         cursor.execute("""
             INSERT INTO submission(correct_label, member_id, class_id)
             VALUES(%s, %s, %s)
