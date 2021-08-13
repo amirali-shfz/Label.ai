@@ -295,7 +295,7 @@ class DiscoveredClassification_Endpoint(APIView):
 class Controversial_Endpoint(APIView):
     def get(self, request, format=None):
         query_FROM = "UnconfirmedClassification NATURAL JOIN Image NATURAL JOIN Label"
-        query_WHERE = "total_votes > 100 AND confidence < 0.7"
+        query_WHERE = "total_votes > 100 AND confidence > 0.3 AND confidence < 0.6"
         query_OTHER = None
         return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
 
