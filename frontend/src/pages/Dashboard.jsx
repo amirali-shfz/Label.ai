@@ -24,6 +24,10 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Paper from '@material-ui/core/Paper';
+import ConfidenceTable from './Table';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+
 
 import iApi from "../services/image/imageApi";
 
@@ -39,6 +43,8 @@ const Contributions = () => {
 
 const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
   console.log("confirmed modal label/data:", label, data)
+  const [inputValue, setInputValue] = React.useState('');
+
   return (
   <div
   style={{
@@ -49,7 +55,7 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
     alignItems:"space-between"
   }}
   >
-    <FormControl >
+    {/* <FormControl >
       <InputLabel id="select-label">Label</InputLabel>
       <Select
         labelId="simple-select-label"
@@ -59,8 +65,26 @@ const ConfirmedModal = ({label, setLabel, allLabels, data}) => {
       >
         {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label}>{label.name}</MenuItem>})}
       </Select>
-    </FormControl>
-    {data === undefined ? null : data.map(({url}) => {return <img style={{maxHeight:"500px", height:"auto", width:"auto"}} src={url} alt={`example of ${label}`}/>})}
+    </FormControl> */}
+
+    <Autocomplete
+        value={label}
+        onChange={(event, newValue) => {
+          // setValue(newValue);
+          setLabel(newValue)
+        }}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => {
+          setInputValue(newInputValue);
+        }}
+        options={allLabels === undefined ? [] : allLabels}
+        getOptionLabel={(option) => option.name}
+        style={{ width: 400, marginBottom: 40 }}
+        renderInput={(params) => <TextField {...params} label="Labels" variant="outlined" />}
+      />
+
+
+    <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
   </div>)
 }
 
@@ -111,6 +135,7 @@ const TablesModal = ({tableName: reportName}) => {
 
   switch(reportName){
     case "labels":
+      // the confirmed modal should display a table
       return (
         <ConfirmedModal 
           allLabels={allLabels}
@@ -120,6 +145,7 @@ const TablesModal = ({tableName: reportName}) => {
         />
       )
     case "mislabelled":
+      
     case "underclassified":
       return (data === undefined? null : data.map((item) => <p>{JSON.stringify(item)}</p> ))
     default:
@@ -134,7 +160,7 @@ export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   
-  const [pageName, setPageName] = useState("dashboard"); // dashboard, tables
+  const [pageName, setPageName] = useState("Dashboard"); // dashboard, tables
 
   const [tableName, setTableName] = useState("labels"); // labels, mislabelled, underclassified
 
@@ -173,7 +199,7 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            Dashboard
+            {pageName}
           </Typography>
           {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -197,13 +223,13 @@ export default function Dashboard() {
         <Divider />
         <List>
           <div>
-            <ListItem button onClick={() => {setPageName("dashboard")}}>
+            <ListItem button onClick={() => {setPageName("Dashboard")}}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={() => {setPageName("tables")}}>
+            <ListItem button onClick={() => {setPageName("Tables")}}>
               <ListItemIcon>
                 <LayersIcon />
               </ListItemIcon>
@@ -212,7 +238,7 @@ export default function Dashboard() {
           </div>
         </List>
           <Divider />
-        { pageName === "tables" ? 
+        { pageName === "Tables" ? 
         <List>
           <div>
             <ListSubheader inset>Saved reports</ListSubheader>

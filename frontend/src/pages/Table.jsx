@@ -15,6 +15,10 @@ const useStyles = makeStyles({
 });
 
 
+const tableTextStyle = {
+  //fontSize:"40px" // TODO: make text look nice
+};
+
 export default function ConfidenceTable({rows}) {
   const classes = useStyles();
 
@@ -23,19 +27,23 @@ export default function ConfidenceTable({rows}) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Image </TableCell>
+            <TableCell>Image</TableCell>
+            <TableCell align="right">Total Votes</TableCell>
             <TableCell align="right">Confidence</TableCell>
-            <TableCell align="right">url</TableCell>
+            <TableCell align="right">Url</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.label_id}>
+            <TableRow key={row.img_id}>
               <TableCell component="th" scope="row">
-                {row.label_name}
+                <img style={{maxHeight:"400px", maxWidth:"400px"}} src={row.url} alt={`example of ${row.label_id}`}/>
               </TableCell>
-              <TableCell align="right">{row.confidence}</TableCell>
-              <TableCell align="right">{row.url}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="right">{Math.round(row.total_votes)}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="right">{row.confidence}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="right">
+                <a href={row.url} rel="noreferrer"> link</a>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -43,3 +51,5 @@ export default function ConfidenceTable({rows}) {
     </TableContainer>
   );
 }
+
+
