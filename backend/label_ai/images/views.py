@@ -180,14 +180,24 @@ class ImageClassificationPrompt(APIView):
     def get(self, request, format=None):
         from django.db import connection
         count = int(request.GET.get("count")) if request.GET.get("count") else 100
+        label_id = str(request.GET.get("label_id")) if request.GET.get("label_id") else ""
+        print(label_id)
         user_id = int(request.GET.get("user_id"))
 
         cursor = connection.cursor()
         query = 'SELECT original_url, img_id, class_id, label_id, name\
-                 FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
-                 as a WHERE NOT EXISTS (SELECT * FROM Submission\
-                 WHERE member_id = %s AND class_id = a.class_id) ORDER BY RANDOM() LIMIT %s;'
-        cursor.execute(query,(user_id, count))
+                FROM (UnConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label)\
+                as a WHERE NOT EXISTS (SELECT * FROM Submission\
+                WHERE member_id = %s AND class_id = a.class_id)'
+
+        if label_id!="": query += 'AND a.label_id=%s'
+
+        query+='ORDER BY RANDOM() LIMIT %s;'
+
+        if label_id == "":    
+            cursor.execute(query,(user_id, count))
+        else:
+            cursor.execute(query,(user_id, label_id, count))
 
         image_classification_prompt = cursor.fetchall()
         images = {}
@@ -219,21 +229,33 @@ class ImageClassificationPrompt(APIView):
 #       label: string,
 #   }>
 # }
-def get_images_label_count(query, request, format=None):
+def get_images_label_count(query_FROM, query_WHERE, query_OTHER, request, format=None):
         from django.db import connection
         
-        query = "SELECT class_id, original_url, img_id, total_votes-10 as total_votes, confidence, name as label_name " + query
-
         count = int(request.GET.get("count")) if request.GET.get("count") else 100
         label_id = request.GET.get("label_id")
-        count = [count]
-        label_id = [label_id] if label_id else []
-        print(label_id+count)
+        
+        if label_id:
+            if query_WHERE:
+                query_WHERE += f" AND label_id='{label_id}'"
+            else:
+                query_WHERE = f"label_id='{label_id}'"
 
+        query_SELECT = "SELECT class_id, original_url, img_id, total_votes-10 as total_votes, confidence, name as label_name"
+
+        if not query_OTHER:
+            query_OTHER = ""
+
+        query = query_SELECT + " FROM "+ query_FROM
+        if query_WHERE:
+            query += " WHERE " + query_WHERE
+        query += query_OTHER + f" LIMIT 10"
+        
+        print(query)
         row_ordering = ["class_id", "url", "img_id", "total_votes", "confidence", "label"]
 
         cursor = connection.cursor()
-        cursor.execute(query, label_id+count)
+        cursor.execute(query)
         label_related_imgs = cursor.fetchall()
 
         parsed_images = []
@@ -247,40 +269,50 @@ def get_images_label_count(query, request, format=None):
         print(parsed_images)
         return JsonResponse(parsed_images, safe=False)
 
-
-
-class MisclassifiedImagesView(APIView):
+# /all/?count=""
+class All_Endpoint(APIView):
     def get(self, request, format=None):
-        query = "FROM Misclassification NATURAL JOIN Image NATURAL JOIN Label \
-                LIMIT %s;"
-        return get_images_label_count(query, request)
+        query_FROM = "ClassificationView NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = None
+        query_OTHER = None 
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
 
-class ConfirmedClassificationsByLabelView(APIView):
+# /confirmed/?count=""
+class Confirmed_Endpoint(APIView):
     def get(self, request, format=None):
-        query = "FROM ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label \
-                WHERE pre_classified AND label_id=%s \
-                LIMIT %s;"
-        return get_images_label_count(query, request)
+        query_FROM = "ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = "pre_classified"
+        query_OTHER = None
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
 
-
-class ConfirmedClassificationImagesView(APIView):
+# /misclassified/?count=""
+class Misclassified_Endpoint(APIView):
     def get(self, request, format=None):
-        query = "FROM ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label \
-                WHERE pre_classified \
-                LIMIT %s;"
-        return get_images_label_count(query, request)
+        query_FROM = "Misclassification NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = None
+        query_OTHER = None
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
 
-class NewClassificationsImagesView(APIView):
+# /discovered/?count=""
+class DiscoveredClassification_Endpoint(APIView):
     def get(self, request, format=None):
-        query = "FROM ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label \
-                WHERE NOT pre_classified \
-                LIMIT %s;"
-        return get_images_label_count(query, request)
+        query_FROM = "ConfirmedClassification NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = "NOT pre_classified"
+        query_OTHER = None
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
 
-class LeastVotesClassificationImagesView(APIView):
+# /controversial/?count=""
+class Controversial_Endpoint(APIView):
     def get(self, request, format=None):
-        query = "FROM ClassificationView NATURAL JOIN Image NATURAL JOIN Label \
-                WHERE AND label_id = %s \
-                ORDER BY total_votes asc \
-                LIMIT %s;"
-        return get_images_label_count(query, request)
+        query_FROM = "UnconfirmedClassification NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = "total_votes > 100 AND confidence < 0.7"
+        query_OTHER = None
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER,  request, format)
+
+# /leastvotes/?count=""
+class LeastVotes_Endpoint(APIView):
+    def get(self, request, format=None):
+        query_FROM = "ClassificationView NATURAL JOIN Image NATURAL JOIN Label"
+        query_WHERE = None
+        query_OTHER = "ORDER BY total_votes asc"
+        return get_images_label_count(query_FROM, query_WHERE, query_OTHER, request, format)

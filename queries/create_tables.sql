@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Member
     password   text NOT NULL,
     trust      float NOT NULL,
     name       text NOT NULL,
-    is_admin boolean NOT NULL
+    is_admin   boolean NOT NULL
 );
 
 -- classification

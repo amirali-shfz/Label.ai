@@ -38,41 +38,18 @@ const Contributions = () => {
   );
 }
 
+const LABEL_FILTERED_PAGES = {"all":true, "confirmed":true}
+
+
 const DEFAULT_COUNT = 10;
 const TablesPage = ({ tableName, allLabels }) => {
   const [labelId, setLabelId] = useState("");
   const [data, setData] = useState([]);
-  const [underClassifiedData, setUnderClassfiedData] = useState([]);
-  const [misLabelledData, setMisLabelledData] = useState([]);
 
-  const getCorrectlyLabelled = async () => {
-    const res = await iApi.getConfirmedImagesByLabel(labelId);
-    setData(res);
-  };
-
-  const getMislabelled = async () => {
-    const mislabelled = await iApi.getMislabelledImages(DEFAULT_COUNT);
-    setData(mislabelled);
-  };
-
-  const getUnderclassified = async () => {
-    const underclassified = await iApi.getUnderclassifiedImages(DEFAULT_COUNT);
-    setData(underclassified);
-  };
-  useEffect(() => {
-    // api calls here based on which tablename is selected
-    switch (tableName) {
-      case "labels":
-        getCorrectlyLabelled();
-        break;
-      case "mislabelled":
-        getMislabelled();
-        break;
-      case "underclassified":
-        getUnderclassified();
-        break;
-      default:
-    }
+  useEffect(async () => {
+    var label_id = tableName in LABEL_FILTERED_PAGES ? labelId : "";
+    const res = await iApi.getImages(tableName, DEFAULT_COUNT, label_id);
+    setData(res)
   }, [tableName, labelId]);
 
   return (
@@ -85,7 +62,7 @@ const TablesPage = ({ tableName, allLabels }) => {
         alignItems: "space-between",
       }}
     >
-      {tableName === "labels" ? (
+      {tableName in LABEL_FILTERED_PAGES ? (
         <ConfirmedPage
           allLabels={allLabels}
           label={labelId}
@@ -110,7 +87,7 @@ export default function Dashboard() {
 
   const [pageName, setPageName] = useState("Dashboard"); // dashboard, tables
 
-  const [tableName, setTableName] = useState("labels"); // labels, mislabelled, underclassified
+  const [tableName, setTableName] = useState("all"); // all, confirmed, misclassified, discovered, controversial
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,6 +124,9 @@ export default function Dashboard() {
     });
   }, []);
 
+  // Prevent re-render of ClassifyImagePage by keeping state up here
+  const [image, setImage] = useState("");
+  const [label, setLabel] = useState({ label_name: "", label_id: "", class_id: "" });
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -256,38 +236,25 @@ export default function Dashboard() {
           <List>
             <div>
               <ListSubheader inset>Categories</ListSubheader>
-              <ListItem
-                button
-                onClick={() => {
-                  setTableName("labels");
-                }}
-              >
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
+              <ListItem button onClick={() => { setTableName("all"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
+                <ListItemText primary="All" />
+              </ListItem>
+              <ListItem button onClick={() => { setTableName("confirmed"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
                 <ListItemText primary="Confirmed" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  setTableName("mislabelled");
-                }}
-              >
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
+              <ListItem button onClick={() => { setTableName("misclassified"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
                 <ListItemText primary="Misclassified" />
               </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  setTableName("underclassified");
-                }}
-              >
-                <ListItemIcon>
-                  <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="New" />
+              <ListItem button onClick={() => { setTableName("discovered"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
+                <ListItemText primary="Discovered" />
+              </ListItem>
+              <ListItem button onClick={() => { setTableName("controversial"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
+                <ListItemText primary="Controversial" />
               </ListItem>
             </div>
           </List>
@@ -312,7 +279,7 @@ export default function Dashboard() {
             />
           }
           {pageName === "Dashboard" ? (
-            <ClassifyImageModal user={user} allLabels={allLabels} />
+            <ClassifyImageModal user={user} allLabels={allLabels} image={image} setImage={setImage} label={label} setLabel={setLabel}/>
           ) : (
             <TablesPage tableName={tableName} allLabels={allLabels} />
           )}
