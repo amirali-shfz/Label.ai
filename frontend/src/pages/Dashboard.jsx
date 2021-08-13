@@ -25,9 +25,12 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ConfidenceTable from './Table';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import NewConfidenceTable from './NewTable';
 import uApi from "../services/user/userApi";
 import iApi from "../services/image/imageApi";
-// import FormDialog from "./Dialog";
+import FormDialog from "./Dialog";
 
 const Contributions = () => {
   return (
@@ -39,11 +42,11 @@ const Contributions = () => {
   );
 }
 
-const ConfirmedPage = ({label, setLabel, allLabels, data}) => {
+const ConfirmedPage = ({label, setLabel, allLabels, data, reportName}) => {
   console.log("confirmed modal label/data:", label, data)
   const [inputValue, setInputValue] = React.useState('');
 
-  return (
+  return (reportName === "labels" ?
   <div
   style={{
     display: "flex",
@@ -53,19 +56,18 @@ const ConfirmedPage = ({label, setLabel, allLabels, data}) => {
     alignItems:"space-between"
   }}
   >
-    <FormControl >
-      <InputLabel id="select-label">Label</InputLabel>
-      <Select
-        labelId="simple-select-label"
-        id="simple-select"
-        value={label}
-        onChange={(event) => {setLabel(event.target.value)}}
-      >
-        {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
-      </Select>
-    </FormControl>
-
-    
+      <FormControl>
+        <InputLabel id="select-label">Label</InputLabel>
+        <Select
+          labelId="simple-select-label"
+          id="simple-select"
+          value={label}
+          onChange={(event) => {setLabel(event.target.value)}}
+        >
+          {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
+        </Select>
+      </FormControl>
+      <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
     { //Todo make this work
     /* <Autocomplete
         value={label}
@@ -81,9 +83,16 @@ const ConfirmedPage = ({label, setLabel, allLabels, data}) => {
         style={{ width: 400, marginBottom: 40 }}
         renderInput={(params) => <TextField {...params} label="Labels" variant="outlined" />}
       /> */}
-
-
-    <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
+  </div>: 
+  <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "center",
+    margin: "24px",
+    alignItems:"space-between"
+  }}>
+     <NewConfidenceTable rows={data === undefined ? [] : data}></NewConfidenceTable>
   </div>)
 }
 
@@ -92,6 +101,8 @@ const TablesPage = ({tableName: reportName}) => {
   const [allLabels, setAllLabels] = useState(undefined);
   const [labelId, setLabelId] = useState("");
   const [data, setData] = useState([])
+  const [underClassifiedData, setUnderClassfiedData] = useState([])
+  const [misLabelledData, setMisLabelledData] = useState([])
 
   const getLabels = async () => {
     console.log("get labels called!")
@@ -138,30 +149,15 @@ const TablesPage = ({tableName: reportName}) => {
     populateData()
   },[labelId])
 
-  switch(reportName){
-    case "labels":
-      // the confirmed modal should display a table
-      return (
-        <ConfirmedPage
-       
-          allLabels={allLabels}
-          label={labelId}
-          setLabel={setLabelId}
-          data={data}
-        />
-      )
-    case "mislabelled":
-      
-    case "underclassified":
-      return (data === undefined? null : data.map((item) => <div>
-        <h4>{item.label}</h4>
-        <img width='300' src={item.url}/>
-        <p>{JSON.stringify(item)}</p>
-      </div> ))
-    default:
-      return null;
-  }
-  
+    return (
+      <ConfirmedPage
+        allLabels={allLabels}
+        label={labelId}
+        setLabel={setLabelId}
+        data={data}
+        reportName={reportName}
+      />
+    )
 }
 
 const drawerWidth = 240;
@@ -251,8 +247,6 @@ export default function Dashboard() {
             Login
             </IconButton>
           }
-            
-        
         </Toolbar>
       </AppBar>
       <Drawer
@@ -296,7 +290,7 @@ export default function Dashboard() {
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="All Classifications" />
+              <ListItemText primary="Confirmed Classifications" />
             </ListItem>
             <ListItem button onClick={() => {setTableName("mislabelled")}}>
               <ListItemIcon>
@@ -324,7 +318,7 @@ export default function Dashboard() {
             alignItems: "space-between"
           }}
         >
-          {/* <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> */}
+          { <FormDialog login={userLogin} setOpenState={setLoginModalShow} isOpen={loginModalShow}/> }
           {pageName === "Dashboard" ? <ClassifyImageModal user={user}/> : <TablesPage tableName={tableName}/> }
           <Contributions />
         </div>
