@@ -3,24 +3,21 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import ConfidenceTable from "./Table";
+
 const ConfirmedPage = ({ label, setLabel, allLabels, data, reportName }) => {
   return (
     <>
-      <FormControl>
-        <InputLabel id="select-label">Label</InputLabel>
+      <FormControl variant="outlined">
+        <InputLabel id="select-label" >Label</InputLabel>
         <Select
           labelId="simple-select-label"
           id="simple-select"
           value={label}
-          onChange={(event) => {
-            setLabel(event.target.value);
-          }}
+          label="Label"
+          onChange={(event) => {setLabel(event.target.value)}}
+          style={{marginBottom:"10px", width:"30%"}}
         >
-          {allLabels === undefined
-            ? null
-            : allLabels.map((label) => {
-                return <MenuItem value={label.label_id}>{label.name}</MenuItem>;
-              })}
+          {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
         </Select>
       </FormControl>
       <ConfidenceTable rows={data === undefined ? [] : data}></ConfidenceTable>
