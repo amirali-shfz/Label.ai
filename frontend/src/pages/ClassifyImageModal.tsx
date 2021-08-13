@@ -2,6 +2,7 @@ import iApi from "../services/image/imageApi";
 import uApi from "../services/user/userApi";
 import { useState, useEffect } from "react";
 import { User } from "../services/user/userModel";
+import Button from '@material-ui/core/Button';
 import _ from 'lodash';
 
 const ClassifyImageModal = () => {
@@ -50,31 +51,31 @@ const ClassifyImageModal = () => {
           alt="to classify"
         />
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
+      <div style={{ display: "flex" , justifyContent:"center", marginTop: "10px" }}>
+        <Button
           onClick={() => {
             buttonClick(true);
           }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "green" })}
         >
           Yes
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             buttonClick(false);
           }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "red" })}
         >
           No
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             buttonClick(null);
           }}
           style={Object.assign({}, buttonStyle, { backgroundColor: "grey" })}
         >
-          I Don't Know
-        </button>
+          Unsure
+        </Button>
       </div>
     </div>
   );
@@ -82,12 +83,14 @@ const ClassifyImageModal = () => {
 
 const buttonStyle = {
   height: "100%",
-  width: "30%",
+  width: "10%",
   cursor: "pointer",
   "text-transform": "uppercase",
   color: "white",
   padding: "5px 15px",
   borderRadius: "5px",
+  marginLeft: "15px",
+  marginRight: "15px"
 };
 
 export default ClassifyImageModal;
