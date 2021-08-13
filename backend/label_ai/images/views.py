@@ -248,7 +248,7 @@ def get_images_label_count(query_FROM, query_WHERE, query_OTHER, request, format
         query = query_SELECT + " FROM "+ query_FROM
         if query_WHERE:
             query += " WHERE " + query_WHERE
-        query += query_OTHER + f" LIMIT 10"
+        query += " " + query_OTHER + f" LIMIT 10"
         
         print(query)
         row_ordering = ["class_id", "url", "img_id", "total_votes", "confidence", "label"]

@@ -258,6 +258,10 @@ export default function Dashboard() {
                 <ListItemIcon><AssignmentIcon/></ListItemIcon>
                 <ListItemText primary="Controversial" />
               </ListItem>
+              <ListItem button onClick={() => { setTableName("leastvotes"); }}>
+                <ListItemIcon><AssignmentIcon/></ListItemIcon>
+                <ListItemText primary="No Votes" />
+              </ListItem>
             </div>
           </List>
         ) : null}

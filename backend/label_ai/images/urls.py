@@ -9,7 +9,8 @@ urlpatterns = [
     path("confirmed/", views.Confirmed_Endpoint.as_view()),
     path("misclassified/", views.Misclassified_Endpoint.as_view()),
     path("discovered/", views.DiscoveredClassification_Endpoint.as_view()),
-    path("controversial/",views.Controversial_Endpoint.as_view()),
+    path("controversial/", views.Controversial_Endpoint.as_view()),
+    path("leastvotes/", views.LeastVotes_Endpoint.as_view()),
     path("prompt",views.ImageClassificationPrompt.as_view()),
 ]
 
