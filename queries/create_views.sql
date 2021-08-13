@@ -13,6 +13,7 @@ CREATE OR REPLACE VIEW ClassificationView (
     img_id,
     label_id,
     pre_classified,
+    total_votes,
     confidence
 ) AS
 SELECT
@@ -20,6 +21,7 @@ SELECT
     img_id,
     label_id,
     pre_classified,
+    total_votes,
     CASE WHEN total_votes = 0 THEN 0 ELSE ((positive_votes + 1.9208) / total_votes - 1.96 * SQRT(CAST ((positive_votes * (total_votes-positive_votes)) / total_votes + 0.9604 AS FLOAT)) / (total_votes)) / (1 + 3.8416 / (total_votes)) END
 FROM (
     SELECT
@@ -47,6 +49,7 @@ CREATE OR REPLACE VIEW Misclassification (
     img_id,
     label_id,
     pre_classified,
+    total_votes,
     confidence
 ) AS
 SELECT *
@@ -60,6 +63,7 @@ CREATE OR REPLACE VIEW ConfirmedClassification (
     img_id,
     label_id,
     pre_classified,
+    total_votes,
     confidence
 ) AS
 SELECT * FROM
@@ -73,6 +77,7 @@ CREATE OR REPLACE VIEW UnconfirmedClassification (
     img_id,
     label_id,
     pre_classified,
+    total_votes,
     confidence
 ) AS
 SELECT *

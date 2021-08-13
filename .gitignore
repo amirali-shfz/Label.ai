@@ -11,6 +11,7 @@ venv
 # dataset_processing 
 !dataset_processing/prod_dataset/*
 !dataset_processing/test_dataset/*
+!dataset_processing/csv/submissions.csv
 
 # backend
 backend/bin/
