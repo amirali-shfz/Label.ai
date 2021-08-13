@@ -36,7 +36,7 @@ const ClassifyImageModal = (props: {
         label.label_id,
         labelFilter
       );
-      // getNewImage();
+      getNewImage();
       return;
     }
   }, [image, label, labelFilter]);
