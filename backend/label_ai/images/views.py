@@ -181,7 +181,6 @@ class ImageClassificationPrompt(APIView):
         from django.db import connection
         count = int(request.GET.get("count")) if request.GET.get("count") else 100
         label_id = str(request.GET.get("label_id")) if request.GET.get("label_id") else ""
-        print(label_id)
         user_id = int(request.GET.get("user_id"))
 
         cursor = connection.cursor()
