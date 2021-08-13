@@ -56,13 +56,15 @@ const ConfirmedPage = ({label, setLabel, allLabels, data, reportName}) => {
     alignItems:"space-between"
   }}
   >
-      <FormControl>
-        <InputLabel id="select-label">Label</InputLabel>
+      <FormControl variant="outlined">
+        <InputLabel id="select-label" >Label</InputLabel>
         <Select
           labelId="simple-select-label"
           id="simple-select"
           value={label}
+          label="Label"
           onChange={(event) => {setLabel(event.target.value)}}
+          style={{marginBottom:"10px", width:"30%"}}
         >
           {allLabels === undefined ? null : allLabels.map((label) => {return <MenuItem value={label.label_id}>{label.name}</MenuItem>})}
         </Select>

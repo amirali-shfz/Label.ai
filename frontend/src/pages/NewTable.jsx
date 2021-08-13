@@ -7,6 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import ConfidencePieChart from './ConfidencePieChart';
+import Button from '@material-ui/core/Button';
+
 
 const useStyles = makeStyles({
   table: {
@@ -16,8 +19,12 @@ const useStyles = makeStyles({
 
 
 const tableTextStyle = {
-  //fontSize:"40px" // TODO: make text look nice
+  fontSize:"18px" // TODO: make text look nice
 };
+
+const tableTitleStyle = {
+    fontSize:"18px" // TODO: make text look nice
+}
 
 export default function NewConfidenceTable({rows}) {
   const classes = useStyles();
@@ -27,27 +34,31 @@ export default function NewConfidenceTable({rows}) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Image</TableCell>
-            <TableCell align="middle">Label</TableCell>
-            <TableCell align="middle">Total Votes</TableCell>
-            <TableCell align="middle">Confidence</TableCell>
-            <TableCell align="middle">Url</TableCell>
+            <TableCell style={Object.assign(tableTextStyle, {})} align="center">Image</TableCell>
+            <TableCell style={Object.assign(tableTextStyle, {})} align="center">Label</TableCell>
+            <TableCell style={Object.assign(tableTextStyle, {})} align="center">Total Votes</TableCell>
+            <TableCell style={Object.assign(tableTextStyle, {})} align="center">Confidence</TableCell>
+            <TableCell style={Object.assign(tableTextStyle, {})} align="center">URL</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.img_id}>
-              <TableCell component="th" scope="row">
+              <TableCell align="center" component="th" scope="row">
                 <img 
                 onError={(e) => e.target.removeAttribute('src')} 
-                style={{maxHeight:"400px", maxWidth:"400px"}} 
+                style={{maxHeight:"375px", maxWidth:"375px"}} 
                 src={row.url} alt={`example of ${row.label_id}`}/>
               </TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{row.label}</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{Math.round(row.total_votes)}</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">{String(row.confidence).substring(0, Math.min(String(row.confidence).length, 6))}</TableCell>
-              <TableCell style={Object.assign(tableTextStyle, {})} align="middle">
-                <a href={row.url} rel="noreferrer"> link</a>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="center">{row.label}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="center">{Math.round(row.total_votes)}</TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="center">
+                  <ConfidencePieChart row={row}></ConfidencePieChart>
+                </TableCell>
+              <TableCell style={Object.assign(tableTextStyle, {})} align="center">
+                <Button href={row.url} color="primary">
+                  Link
+                </Button>
               </TableCell>
             </TableRow>
           ))}
