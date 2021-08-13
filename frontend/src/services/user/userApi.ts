@@ -5,7 +5,7 @@ const userApi = {
   getUsersMap: async (): Promise<User> => {
     const res: any = await api.get("/members/all");
     const users = res.data.reduce((map: any, user: any) => {
-      map[user.username] = { trust: user.trust, userId: user.userId };
+      map[user.username] = { ...user };
       return map;
     }, {});
     return users;

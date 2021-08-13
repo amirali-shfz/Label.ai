@@ -5,10 +5,11 @@ import { User } from "../user/userModel";
 const classificationApi = {
   // Core api (blue) 2.1
   getClassificationProblem: async (params: {
-    user_id: string;
-    label: string;
-    count: number;
+    user_id: string,
+    label_id: string,
+    count: number,
   }): Promise<any> => {
+    console.log('pms',params)
     const res = await api.get("/images/prompt", {
       params,
     });
