@@ -1,4 +1,4 @@
-# CS348-Project
+# Label.ai
 
 # Required installations
 - Node.js >= 14
