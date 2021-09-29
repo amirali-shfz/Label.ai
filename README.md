@@ -1,5 +1,7 @@
 # Label.ai
 
+![label ai 001](https://user-images.githubusercontent.com/25187424/135194743-cf4941ec-91d5-4801-871d-0a5dad90dc44.jpeg)
+
 ## Description
 
 Label.ai is an application for companies and researchers in the field of machine learning classification. This project allows companies to validate their classification dataset by having a large number of people label image datasets. The process is simple:
