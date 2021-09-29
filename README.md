@@ -211,6 +211,10 @@ How to handle non-unique case? Triggers?
   
 ## Relational Schema
 
+Here is the relational schema of our backend architecture for those interested!
+  
+![relational schema](https://user-images.githubusercontent.com/25187424/135192250-16f3d66b-30bd-44d0-bc29-9d6019f6981a.png)
+
 
   
   
