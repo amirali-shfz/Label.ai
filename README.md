@@ -1,6 +1,26 @@
 # Label.ai
 
+## Description
+
+Label.ai is an application for companies and researchers in the field of machine learning classification. This project allows companies to validate their classification dataset by having a large number of people label image datasets. The process is simple:
+
+1. Companies will provide Label.ai with labelled images
+2. Label.ai will outsource to individuals to verify whether each image actually contains the given labels. 
+3. Individuals will be compensated respective to how well/how much they label
+
+For example, consider an image with a cat that looks very similar to a dog. If this image was classified by some sort of AI/algorithm (especially the AI is not optimized), it would be likely that this image will be misclassified. Through the procedure above, Label.ai will ensure that the proper classification is provided to the image
+
+## Motivation
+
+The main motivation for creating our platform, Label.ai, is because machine learning and many other techniques in artificial intelligence require large amounts of data, and thus datasets are considered the new gold. The issue is that massive datasets with accurate labelling are extremely time consuming to create and often, datasets are not perfectly annotated. Label.ai aims to connect researchers/companies with independent labelling contractors who will label/verify the data/images for them. We believe that the existence of such a platform comes with many benefits. On one hand, it will improve the quality of datasets for companies who are in the AI / ML field. Moreover, it provides a secondary form of income for individual labellers with minimal training required.
+
+## Application Overview
+
+Our application is very simple to use. After starting up the 3 instances (postgresql, frontend, backend), open the frontend interface. The frontend has 2 main dashboards. The main dashboard will allow users to label images (the main functionality of labelai). The other dashboard is a dashboard that shows the different reports (AllConfirmed, MisClassified, Discovered, Controversial, NoVotes). This option is only available to admin users.
+
+
 ## Required installations
+
 - Node.js >= 14
 - PSQL
 - All packages inside `backend/requirements/base.txt`
@@ -187,3 +207,10 @@ How to handle non-unique case? Triggers?
 6. Get all the misclassified images which were previously classified
 
 7. Calculate confidence in classifications
+
+  
+## Relational Schema
+
+
+  
+  
