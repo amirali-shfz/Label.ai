@@ -1,6 +1,6 @@
 # Label.ai
 
-# Required installations
+## Required installations
 - Node.js >= 14
 - PSQL
 - All packages inside `backend/requirements/base.txt`
@@ -45,7 +45,7 @@
    pg_ctl -D /usr/local/var/postgres start
    ```
 
-# The Website
+## The Website
 1. Create a virtualenv:
    ```bash
    python3.9 -m venv venv
@@ -97,7 +97,7 @@
    - List all labels: `0.0.0.0:8000/labels/`
 
 
-# Features
+## Features
 
 
 `backend/label_ai/labels/views.py:`
@@ -165,7 +165,7 @@
       http://localhost:8000/images/prompt
 
 
-# Core Features
+## Core Features
 
 
 1. Get random classification prompts
